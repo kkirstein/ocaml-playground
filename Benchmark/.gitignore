@@ -1,0 +1,6 @@
+# generated test files
+benchmark_test.ml
+qtest.targets.log
+
+# generated images
+*.ppm

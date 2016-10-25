@@ -1,0 +1,4 @@
+true:	package(num)
+true: package(oUnit), package(QCheck)
+true:	bin_annot
+"lib": include
