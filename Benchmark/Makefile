@@ -3,13 +3,13 @@
 #
 
 OCB_FLAGS = -use-ocamlfind
-OCB_FLAGS_TEST = -use-ocamlfind -no-links
+OCB_FLAGS_TEST = -use-ocamlfind -cflags -warn-error,+26 -no-links
 OCB = ocamlbuild
 
 main = benchmark
-main_test = benchmark_test
+main_test = test_runner
 test_sources = lib/color_map.ml lib/fibonacci.ml \
-	lib/image.ml lib/mandelbrot.ml lib/Perfect_number.ml
+	lib/image.ml lib/mandelbrot.ml lib/perfect_number.ml
 
 all: native byte # profile debug
 

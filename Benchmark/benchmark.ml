@@ -33,7 +33,9 @@ let () =
   print_endline "Perfect numbers";
   print_endline "===============";
   Printf.printf "perfect_numbers(10000) = %a (Elapsed time %fs)\n" print_int_list (Perfect_number.perfect_numbers 10000) (time_it Perfect_number.perfect_numbers 10000);
-
+  (*  Printf.printf "perfect_numbers_2(10000) = %a (Elapsed time %fs)\n" print_int_list (Perfect_number.perfect_numbers_2 10000) (time_it Perfect_number.perfect_numbers 10000);
+  *)
+  
   print_newline ();
 
   print_endline "Mandelbrot set";

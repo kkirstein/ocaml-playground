@@ -1,5 +1,5 @@
 # generated test files
-benchmark_test.ml
+test_runner.ml
 qtest.targets.log
 
 # generated images
