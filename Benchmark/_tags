@@ -1,4 +1,4 @@
 true:	package(num)
-true: package(oUnit), package(QCheck)
+true: package(oUnit), package(qcheck)
 true:	bin_annot
 "lib": include
