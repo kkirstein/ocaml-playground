@@ -62,7 +62,7 @@ let permute_range a b =
   (permute_range 1 8) [2; 7; 4; 5; 6; 3; 8; 1]
 *)
 
-
+(*
 let perfect_numbers_2 n =
   let nums = permute_range 1 n in
   Parmap.parmap ~ncores:4 ~chunksize:1 (fun i -> (i, is_perfect i)) (Parmap.L nums)
@@ -71,4 +71,5 @@ let perfect_numbers_2 n =
   |> List.sort compare
 (*$= perfect_numbers_2 as pn & ~printer:pp_list_of_int
     (List.sort compare (pn 100)) [6; 28]
+*)
 *)
