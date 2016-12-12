@@ -2,7 +2,7 @@
 # Makefile for Machine Learning tools
 #
 
-OCB_FLAGS = -use-ocamlfind
+OCB_FLAGS = -use-ocamlfind -no-links
 OCB_FLAGS_TEST = -use-ocamlfind -cflags -warn-error,+26 -no-links
 OCB = ocamlbuild
 
@@ -30,13 +30,13 @@ byte:
 	$(OCB) $(OCB_FLAGS) $(main).byte
 
 profile:
-	$(OCB) $(OCB_FLAGS) -tag profile $(main).native
+	$(OCB) $(OCB_FLAGS) -tag profile _build/$(main).native
 
 debug:
-	$(OCB) $(OCB_FLAGS) -tag debug $(main).byte
+	$(OCB) $(OCB_FLAGS) -tag debug _build/$(main).byte
 
 run: native
-	./$(main).native
+	_build/$(main).native
 
 # iTeML tests
 $(main_test).ml: $(test_sources)

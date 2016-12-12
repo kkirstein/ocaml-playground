@@ -29,9 +29,15 @@ let () =
   print_endline "Fibonacci numbers";
   print_endline "=================";
 
-  Printf.printf "fib_naive(35) = %d (Elapsed time %.3fs)\n" (Fibonacci.fib_naive 35) (time_it Fibonacci.fib_naive 35);
-  Printf.printf "fib(35) = %s (Elapsed time %.3fs)\n" (Big_int.string_of_big_int (Fibonacci.fib 35)) (time_it Fibonacci.fib 35);
-  Printf.printf "fib(1000) = %s (Elapsed time %.3fs)\n" (Big_int.string_of_big_int (Fibonacci.fib 1000)) (time_it Fibonacci.fib 1000);
+  Printf.printf "fib_naive(35) = %d (Elapsed time %.3fs)\n"
+	 (Fibonacci.fib_naive 35)
+	 (time_it Fibonacci.fib_naive 35);
+  Printf.printf "fib(35) = %s (Elapsed time %.3fs)\n"
+	 (Big_int.string_of_big_int (Fibonacci.fib 35))
+	 (time_it Fibonacci.fib 35);
+  Printf.printf "fib(1000) = %s (Elapsed time %.3fs)\n"
+	 (Big_int.string_of_big_int (Fibonacci.fib 1000))
+	 (time_it Fibonacci.fib 1000);
   print_newline ();
 
   print_endline "Perfect numbers";
