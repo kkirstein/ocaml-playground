@@ -1,0 +1,4 @@
+true: package(opium.unix)
+true: package(oUnit), package(qcheck)
+true: bin_annot
+"lib": include
