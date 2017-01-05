@@ -21,6 +21,7 @@ let is_perfect n =
   (is_perfect 29) false
 *)
 
+(*
 (* async predicate to check for a perfect number *)
 let lwt_is_perfect n = Lwt.map is_perfect (Lwt.return n)
 (*$= lwt_is_perfect
@@ -43,7 +44,7 @@ let lwt_is_perfect_val n =
   (lwt_is_perfect_val 28) (Lwt.return_some 28)
   (lwt_is_perfect_val 29) Lwt.return_none
 *)
-
+*)
 
 
 (*$inject
