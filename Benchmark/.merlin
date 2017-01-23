@@ -1,4 +1,3 @@
 S lib/*
 B _build/**
 PKG num
-PKG netmulticore

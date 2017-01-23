@@ -6,7 +6,7 @@ OCB_FLAGS = -use-ocamlfind -no-links
 OCB_FLAGS_TEST = -use-ocamlfind -cflags -warn-error,+26 -no-links
 OCB = ocamlbuild
 
-main = benchmark_mt
+main = benchmark
 main_test = test_runner
 test_sources = lib/color_map.ml lib/fibonacci.ml \
 	lib/image.ml lib/mandelbrot.ml lib/perfect_number.ml

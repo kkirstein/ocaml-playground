@@ -1,4 +1,4 @@
-true: package(num), package(netmulticore)
+true: package(num)
 true: package(oUnit), package(qcheck)
 true:	bin_annot
 "lib": include
