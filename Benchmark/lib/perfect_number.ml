@@ -21,6 +21,10 @@ let is_perfect n =
   (is_perfect 29) false
 *)
 
+(* C version of predicate to check for a perfect number *)
+external is_perfect_c: int -> bool = "is_perfect_c"
+
+
 (*
 (* async predicate to check for a perfect number *)
 let lwt_is_perfect n = Lwt.map is_perfect (Lwt.return n)
@@ -61,4 +65,3 @@ let perfect_numbers n =
 (*$= perfect_numbers as pn & ~printer:pp_list_of_int
   (pn 100) [6; 28]
 *)
-
