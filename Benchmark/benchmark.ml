@@ -37,12 +37,9 @@ let () =
   let res = time_it Perfect_number.perfect_numbers pn_limit in
   Printf.printf "perfect_numbers(%d) = %a (Elapsed time %.3fs)\n"
     pn_limit print_int_list res.result res.elapsed;
-(*
-Printf.printf "perfect_numbers_2(%d) = %a (Elapsed time %.3fs)\n"
-  pn_limit
-  print_int_list (Perfect_number.perfect_numbers_2 pn_limit)
-  (time_it Perfect_number.perfect_numbers_2 pn_limit);
-*)
+  let res = time_it Perfect_number.perfect_numbers_c pn_limit in
+  Printf.printf "perfect_numbers_c(%d) = %a (Elapsed time %.3fs)\n"
+    pn_limit print_int_list res.result res.elapsed;
 
   print_newline ();
   print_endline "Mandelbrot set";

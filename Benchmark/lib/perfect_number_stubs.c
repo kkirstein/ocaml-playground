@@ -4,17 +4,21 @@
  * code stubs for perfect number calculation in C
  * to be called by OCaml */
 
-#include <caml/mlvalues.h>
+#include <stdio.h>
 
-CAMLprim value is_perfect_c(value n) {
-  CAMLparam1(n);
+#include <caml/mlvalues.h>
+#include <caml/memory.h>
+
+CAMLprim value is_perfect_c(value caml_n) {
+  CAMLparam1(caml_n);
   CAMLlocal1(res);
 
   int sum = 0;
-  for(int i = 1; i < Int_val(n); i++) {
+  int n = Int_val(caml_n);
+  for(int i = 1; i < n; i++) {
     if(n % i == 0) sum += i;
   }
 
-  res = Val_bool(sum == Int_val(n));
+  res = Val_bool(sum == n);
   CAMLreturn(res);
 }
