@@ -24,6 +24,7 @@ clean:
 
 native:
 	rm -f $(main).native
+#	$(OCB) -cflags -ccopt,-fopenmp lib/perfect_number_stubs.o
 	$(OCB) lib/perfect_number_stubs.o
 	$(OCB) $(main).native $(OCB_FLAGS) -lflags lib/perfect_number_stubs.o
 

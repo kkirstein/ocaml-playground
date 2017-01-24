@@ -37,6 +37,9 @@ let () =
   let res = time_it Perfect_number.perfect_numbers pn_limit in
   Printf.printf "perfect_numbers(%d) = %a (Elapsed time %.3fs)\n"
     pn_limit print_int_list res.result res.elapsed;
+  let res = time_it Perfect_number.perfect_numbers_2 pn_limit in
+  Printf.printf "perfect_numbers_2(%d) = %a (Elapsed time %.3fs)\n"
+    pn_limit print_int_list res.result res.elapsed;
   let res = time_it Perfect_number.perfect_numbers_c pn_limit in
   Printf.printf "perfect_numbers_c(%d) = %a (Elapsed time %.3fs)\n"
     pn_limit print_int_list res.result res.elapsed;
