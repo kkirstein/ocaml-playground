@@ -2,12 +2,14 @@
 # Makefile for Machine Learning tools
 #
 
-OCB_FLAGS = -use-ocamlfind -no-links -lflags lib/libpn.a
-OCB_FLAGS_TEST = -use-ocamlfind -cflags -warn-error,+26 -no-links -lflag lib/libpn.a
+OCB_FLAGS = -use-ocamlfind -no-links  -lflags lib/perfect_number_stubs.o
+OCB_FLAGS_TEST = -use-ocamlfind -cflags -warn-error,+26 -no-links -lflags lib/perfect_number_stubs.o
 OCB = ocamlbuild
 
+# C compiler setup
+CC = $(shell ocamlc -config | awk 'BEGIN {FS=":"} /native_c_compiler/ { print $$2 }')
 #CFLAGS = -cflags -ccopt,-static,-ccopt,-fopenmp
-CFLAGS =
+CFLAGS = -fPIC
 
 main = benchmark
 main_test = test_runner
@@ -25,15 +27,13 @@ clean:
 	rm -f $(main_test).ml
 
 
-native:
+native: clibs
 	rm -f $(main).native
 #	$(OCB) -cflags -ccopt,-fopenmp lib/perfect_number_stubs.o
-	$(OCB) $(CFLAGS) libpn.a
 	$(OCB)  $(main).native $(OCB_FLAGS)
 
-byte:
+byte: clibs
 	rm -f $(main).byte
-	$(OCB) $(CFLAGS) libpn.a
 	$(OCB) $(main).byte $(OCB_FLAGS) -lflags -custom
 
 profile:
@@ -46,16 +46,17 @@ run: native
 	_build/$(main).native
 
 # build c stubs
-.o:.c
-	$(OCB) $@
+clibs:
+	mkdir -p _build/lib
+#	$(CC) $(CFLAGS) lib/perfect_number_stubs.c -shared -o _build/lib/libpn.so
+	$(CC) $(CFLAGS) -c lib/perfect_number_stubs.c -o _build/lib/perfect_number_stubs.o
 
 # iTeML tests
 $(main_test).ml: $(test_sources)
 	qtest -o $@ extract $^
 
-test: $(main_test).ml
-	$(OCB) $(CFLAGS) libpn.a
+test: clibs $(main_test).ml
 	$(OCB) $(main_test).native $(OCB_FLAGS_TEST)
 	_build/$(main_test).native
 
-.PHONY: 	all clean byte native profile debug test
+.PHONY: 	all clean byte native clibs profile debug test
