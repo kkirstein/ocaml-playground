@@ -48,8 +48,9 @@ run: native
 # build c stubs
 clibs:
 	mkdir -p _build/lib
-#	$(CC) $(CFLAGS) lib/perfect_number_stubs.c -shared -o _build/lib/libpn.so
-	$(CC) $(CFLAGS) -c lib/perfect_number_stubs.c -o _build/lib/perfect_number_stubs.o
+	#$(CC) $(CFLAGS) lib/perfect_number_stubs.c -shared -o _build/lib/libpn.so
+	#$(CC) $(CFLAGS) -c lib/perfect_number_stubs.c -o _build/lib/perfect_number_stubs.o
+	$(OCB) lib/libpn.a
 
 # iTeML tests
 $(main_test).ml: $(test_sources)
