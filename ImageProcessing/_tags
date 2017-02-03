@@ -1,0 +1,3 @@
+true: package(stb_image), package(bigarray)
+true:	bin_annot
+"lib": include
