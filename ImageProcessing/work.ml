@@ -5,12 +5,15 @@
 *)
 
 open Stb_image
+open Img_proc
 
 (* load example image *)
 let lena = load "./test_images/lena.jpg"
 
 let () =
   match lena with
-  | Ok img -> Printf.printf "Image loaded: width: %d, height: %d, channels: %d" img.height img.width img.channels
-  | Error (`Msg msg) -> print_endline ("Failed loading image: " ^ msg);
+  | Ok img 						-> Printf.printf "Image loaded: width: %d, height: %d, channels: %d\n"
+													img.height img.width img.channels
+  | Error (`Msg msg)	-> print_endline ("Failed loading image: " ^ msg);
   print_endline "Bye bye.."
+
