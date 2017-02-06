@@ -24,12 +24,12 @@ let load ?channels filename =
   match load ?channels filename with
     | Ok img  -> Img_proc.(Int {width = img.width; height = img.height;
                   channels = img.channels; cmode = RGB;
-                  data = Bigarray.genarray_of_array1 img.data})
+                  data = Bigarray.reshape (Bigarray.genarray_of_array1 img.data) [|img.channels; img.width; img.height|]})
     | Error (`Msg msg)  -> failwith msg
 
 (* write image to file *)
 let write filename img =
   match img with
-    | Img_proc.Int img' -> Img_proc.(png filename ~w:img'.width ~h:img'.height
-                            ~c:img'.channels (Bigarray.array1_of_genarray img'.data))
+    | Img_proc.Int img' -> Img_proc.(png filename ~w:img'.width ~h:img'.height ~c:img'.channels
+														(Bigarray.array1_of_genarray (Bigarray.reshape img'.data [|(img'.channels*img'.width*img'.height)|])))
     | Img_proc.Float _  -> failwith "Float images are currently not supported"
