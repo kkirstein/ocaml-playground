@@ -4,16 +4,17 @@
  * Do image processing in OCaml
 *)
 
-open Stb_image
 open Img_proc
+open Img_proc_io
 
 (* load example image *)
 let lena = load "./test_images/lena.jpg"
 
 let () =
-  match lena with
-  | Ok img 						-> Printf.printf "Image loaded: width: %d, height: %d, channels: %d\n"
-													img.height img.width img.channels
-  | Error (`Msg msg)	-> print_endline ("Failed loading image: " ^ msg);
+  Printf.printf "Image loaded: width: %d, height: %d, channels: %d\n"
+                        (height lena) (width lena) (channels lena);
+  let gray_img = convert_color ~src_mode:RGB ~dest_mode:Gray lena in
+  Printf.printf "Grayscale image: width: %d, height: %d, channels: %d\n"
+                        (height gray_img) (width gray_img) (channels gray_img);
+  write "./test_output/lena_gray.png" gray_img;
   print_endline "Bye bye.."
-
