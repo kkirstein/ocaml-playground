@@ -31,5 +31,5 @@ let load ?channels filename =
 let write filename img =
   match img with
     | Img_proc.Int img' -> Img_proc.(png filename ~w:img'.width ~h:img'.height ~c:img'.channels
-														(Bigarray.array1_of_genarray (Bigarray.reshape img'.data [|(img'.channels*img'.width*img'.height)|])))
+														(Bigarray.reshape_1 img'.data (img'.channels*img'.width*img'.height)))
     | Img_proc.Float _  -> failwith "Float images are currently not supported"

@@ -17,4 +17,5 @@ let () =
   Printf.printf "Grayscale image: width: %d, height: %d, channels: %d\n"
                         (height gray_img) (width gray_img) (channels gray_img);
   write "./test_output/lena_gray.png" gray_img;
+  write "./test_output/lena.png" lena;
   print_endline "Bye bye.."
