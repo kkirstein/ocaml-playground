@@ -4,3 +4,4 @@ qtest.targets.log
 
 # generated images
 *.ppm
+test_output
