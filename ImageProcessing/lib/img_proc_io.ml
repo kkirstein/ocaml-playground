@@ -27,9 +27,37 @@ let load ?channels filename =
                   data = Bigarray.reshape (Bigarray.genarray_of_array1 img.data) [|img.channels; img.width; img.height|]})
     | Error (`Msg msg)  -> failwith msg
 
+(* Supported image file formats *)
+type fileformat =
+  | PNG
+  | BMP
+
+let fix_array w h ary =
+  let new_ary = Bigarray.Array1.create Bigarray.Int8_unsigned Bigarray.C_layout (w*h*3) in
+  for idx = 0 to (w*h - 1) do
+    Bigarray.Array1.set new_ary (idx*3) (Bigarray.Array1.get ary idx);
+    Bigarray.Array1.set new_ary (idx*3+1) (Bigarray.Array1.get ary idx);
+    Bigarray.Array1.set new_ary (idx*3+2) (Bigarray.Array1.get ary idx)
+  done;
+  new_ary
+
+
 (* write image to file *)
-let write filename img =
+let write_png filename img =
+  let open Img_proc in
   match img with
-    | Img_proc.Int img' -> Img_proc.(png filename ~w:img'.width ~h:img'.height ~c:img'.channels
-														(Bigarray.reshape_1 img'.data (img'.channels*img'.width*img'.height)))
+    | Img_proc.Int img' -> let data = Bigarray.reshape_1 img'.data (img'.channels*img'.width*img'.height) in
+                            png filename ~w:img'.width ~h:img'.height ~c:img'.channels data
     | Img_proc.Float _  -> failwith "Float images are currently not supported"
+
+let write_bmp filename img =
+  match img with
+    | Img_proc.Int img' -> let data = Img_proc.(Bigarray.reshape_1 img'.data (img'.channels*img'.width*img'.height)) in
+                            Img_proc.(bmp filename ~w:img'.width ~h:img'.height ~c:img'.channels data)
+    | Img_proc.Float _  -> failwith "Float images are currently not supported"
+
+let write ~format filename img =
+  match format with
+  | PNG -> write_png filename img
+  | BMP -> write_bmp filename img
+  (* | _   -> failwith "Format not supported" *)
