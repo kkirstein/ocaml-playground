@@ -51,8 +51,8 @@ let convert_color_rgb_gray img =
     | Int img'    -> begin
       let buf = array3_of_genarray img'.data in
       let new_buf = Array2.create Bigarray.Int8_unsigned c_layout img'.width img'.height in
-      (for x = 0 to (img'.height - 1) do
-        for y = 0 to (img'.width - 1) do
+      (for x = 0 to (img'.width - 1) do
+        for y = 0 to (img'.height - 1) do
 					let (r, g, b) = Array3.(get buf 0 x y, get buf 1 x y, get buf 2 x y) in
 					Array2.set new_buf x y
 						(int_of_float (0.299*.(float_of_int r) +. 0.587*.(float_of_int g) +. 0.114*.(float_of_int b)))
