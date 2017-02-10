@@ -14,6 +14,8 @@ let fruits = load "./test_images/fruits.jpg"
 let () =
   Printf.printf "Fruits image loaded: width: %d, height: %d, channels: %d\n"
                       (width fruits) (height fruits) (channels fruits);
+  write ~format:PPM "./test_output/fruits.ppm" fruits;
+
   Printf.printf "Lena image loaded: width: %d, height: %d, channels: %d\n"
                         (width lena) (height lena) (channels lena);
   let gray_img = convert_color ~src_mode:RGB ~dest_mode:Gray lena in
