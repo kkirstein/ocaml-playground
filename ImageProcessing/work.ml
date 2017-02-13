@@ -14,7 +14,9 @@ let fruits = load "./test_images/fruits.jpg"
 let () =
   Printf.printf "Fruits image loaded: width: %d, height: %d, channels: %d\n"
                       (width fruits) (height fruits) (channels fruits);
-  write ~format:PPM "./test_output/fruits.ppm" fruits;
+  write ~format:PNM "./test_output/fruits.ppm" fruits;
+  let gray_fruits = convert_color ~src_mode:RGB ~dest_mode:Gray fruits in
+  write ~format:PNM "./test_output/fruits_gray.pgm" gray_fruits;
 
   Printf.printf "Lena image loaded: width: %d, height: %d, channels: %d\n"
                         (width lena) (height lena) (channels lena);
@@ -22,6 +24,5 @@ let () =
   Printf.printf "Grayscale image: width: %d, height: %d, channels: %d\n"
                         (height gray_img) (width gray_img) (channels gray_img);
   write ~format:PNG "./test_output/lena_gray.png" gray_img;
-  write ~format:BMP "./test_output/lena_gray.bmp" gray_img;
   write ~format:PNG "./test_output/lena.png" lena;
   print_endline "Bye bye.."

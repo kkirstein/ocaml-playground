@@ -27,7 +27,7 @@ module Stb_io = struct
     match load ?channels filename with
       | Ok img  -> Img_proc.(Int {width = img.width; height = img.height;
                     channels = img.channels; cmode = RGB;
-                    data = Bigarray.reshape (Bigarray.genarray_of_array1 img.data) [|img.channels; img.width; img.height|]})
+                    data = Bigarray.reshape (Bigarray.genarray_of_array1 img.data) [|img.width; img.height; img.channels|]})
       | Error (`Msg msg)  -> failwith msg
 
   (* write image to file *)
@@ -61,16 +61,44 @@ module Npm = struct
       Printf.fprintf oc "%d %d %d\n" img'.width img'.height 255;
       let data = Img_proc.(Bigarray.reshape_1 img'.data (img'.channels*img'.width*img'.height)) in
       for i = 0 to (img'.width*img'.height - 1) do
-        Printf.fprintf oc "%d %d %d\n"
+        Printf.fprintf oc "%d %d %d"
           (Bigarray.Array1.get data (3*i))
           (Bigarray.Array1.get data (3*i + 1))
-          (Bigarray.Array1.get data (3*i + 2))
+          (Bigarray.Array1.get data (3*i + 2));
+        if ((i+1) mod 4) = 0 then output_char oc '\n' else output_char oc ' '
       done;
       close_out oc;
     with e ->
       close_out_noerr oc;
       raise e
 
+  let write_pgm filename img =
+    let img' = match img with
+      | Int img'  -> img'
+      | Float _   -> failwith "Float images are not supported for PPM format" in
+    let oc = open_out filename in
+    try
+      Printf.fprintf oc "P2\n";
+      Printf.fprintf oc "%d %d %d\n" img'.width img'.height 255;
+      let data = Img_proc.(Bigarray.reshape_1 img'.data (img'.channels*img'.width*img'.height)) in
+      for i = 0 to (img'.width*img'.height - 1) do
+        output_string oc (string_of_int (Bigarray.Array1.get data i));
+        if ((i+1) mod 16) = 0 then output_char oc '\n' else output_char oc ' '
+      done;
+      close_out oc;
+    with e ->
+      close_out_noerr oc;
+      raise e
+
+  (* generic wrapper for graymap & pixmap formats *)
+  let write_pnm filename img =
+    let img' = match img with
+      | Int img'  -> img'
+      | Float _   -> failwith "Float images are not supported for PPM format" in
+  match img'.channels with
+    | 3 -> write_ppm filename img
+    | 1 -> write_pgm filename img
+    | _ -> failwith "Only images with 1 or 3 channels are supported for PNM"
 
 end
 
@@ -78,7 +106,7 @@ end
 type fileformat =
   | PNG
   | BMP
-  | PPM
+  | PNM
 
 let fix_array w h ary =
   let new_ary = Bigarray.Array1.create Bigarray.Int8_unsigned Bigarray.C_layout (w*h*3) in
@@ -97,5 +125,5 @@ let write ~format filename img =
   match format with
   | PNG -> Stb_io.write_png filename img
   | BMP -> Stb_io.write_bmp filename img
-  | PPM -> Npm.write_ppm filename img
+  | PNM -> Npm.write_pnm filename img
   (* | _   -> failwith "Format not supported" *)
