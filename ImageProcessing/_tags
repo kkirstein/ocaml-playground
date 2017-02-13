@@ -1,3 +1,4 @@
 true: package(bigarray), package(stb_image), package(stb_image_write)
+true: package(oUnit), package(qcheck)
 true:	bin_annot
 "lib": include

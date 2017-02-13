@@ -11,7 +11,7 @@ CFLAGS =
 
 main = work
 main_test = test_runner
-test_sources =
+test_sources = lib/img_proc.ml
 clib =
 
 all: native byte # profile debug
