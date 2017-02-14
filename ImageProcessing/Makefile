@@ -33,6 +33,10 @@ byte:
 	rm -f $(main).byte
 	$(OCB) $(main).byte $(OCB_FLAGS) -lflags -custom
 
+lib:
+	$(OCB) $(OCB_FLAGS) img_proc.cma
+	$(OCB) $(OCB_FLAGS) img_proc.cmxa
+
 profile:
 	$(OCB) $(OCB_FLAGS) -tag profile _build/$(main).native
 
@@ -54,4 +58,4 @@ test: $(main_test).ml
 	$(OCB) $(main_test).native $(OCB_FLAGS_TEST)
 	_build/$(main_test).native
 
-.PHONY: 	all clean byte native profile debug test
+.PHONY: 	all clean byte native profile debug test lib
