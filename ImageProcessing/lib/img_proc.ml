@@ -120,6 +120,46 @@ let check_float ?channels ?color_mode img =
 
 
 (* convert RGB image to grayscale *)
+let rgb_to_gray_int (r, g, b) =
+	int_of_float (0.299*.(float_of_int r) +. 0.587*.(float_of_int g) +. 0.114*.(float_of_int b))
+
+let rgb_to_gray_float (r, g, b) =
+	0.299*.r +. 0.587*.g +. 0.114*.b
+
+let gray_to_rgb gray =
+	(gray, gray, gray)
+
+
+(* color conversion for integer images *)
+let convert_int_3_1 ~converter ~src_mode ~dest_mode img =
+	let img' = check_int ~color_mode:src_mode ~channels:3 img in
+	let buf = array3_of_genarray img'.data in
+	let new_buf = Array2.create Bigarray.Int8_unsigned c_layout img'.width img'.height in
+	(for x = 0 to (img'.width - 1) do
+		for y = 0 to (img'.height - 1) do
+			let new_val = converter Array3.(get buf x y 0, get buf x y 1, get buf x y 2) in
+			Array2.set new_buf x y new_val
+		done
+	done);
+	Int {width = img'.width; height = img'.height; channels = 1; cmode = Gray;
+		data = genarray_of_array2 new_buf}
+
+let convert_int_1_3 ~converter ~src_mode ~dest_mode img =
+	let img' = check_int ~color_mode:src_mode ~channels:1 img in
+	let buf = array3_of_genarray img'.data in
+	let new_buf = Array3.create Bigarray.Int8_unsigned c_layout img'.width img'.height 3 in
+	(for x = 0 to (img'.width - 1) do
+		for y = 0 to (img'.height - 1) do
+			let (a, b, c) = converter Array3.(get buf x y 0, get buf x y 1, get buf x y 2) in
+			Array3.set new_buf x y 0 a;
+			Array3.set new_buf x y 1 b;
+			Array3.set new_buf x y 2 c
+		done
+	done);
+	Int {width = img'.width; height = img'.height; channels = 1; cmode = Gray;
+		data = genarray_of_array3 new_buf}
+
+(*
 let convert_color_rgb_gray img =
   match img with
     | Int img'    -> begin
@@ -127,8 +167,7 @@ let convert_color_rgb_gray img =
       let new_buf = Array2.create Bigarray.Int8_unsigned c_layout img'.width img'.height in
       (for x = 0 to (img'.width - 1) do
         for y = 0 to (img'.height - 1) do
-					let (r, g, b) = Array3.(get buf x y 0, get buf x y 1, get buf x y 2) in
-          let new_val = int_of_float (0.299*.(float_of_int r) +. 0.587*.(float_of_int g) +. 0.114*.(float_of_int b)) in
+          let new_val = rgb_to_gray_int Array3.(get buf x y 0, get buf x y 1, get buf x y 2) in
 					Array2.set new_buf x y new_val
         done
       done);
@@ -140,29 +179,21 @@ let convert_color_rgb_gray img =
       let new_buf = Array2.create Bigarray.Float32 c_layout img'.width img'.height in
       (for x = 0 to img'.height do
         for y = 0 to img'.width do
-					let (r, g, b) = Array3.(get buf 0 x y, get buf 1 x y, get buf 2 x y) in
-					Array2.set new_buf x y (0.299*.r +. 0.587*.g +. 0.114*.b)
+					let new_val = rgb_to_gray_float Array3.(get buf 0 x y, get buf 1 x y, get buf 2 x y) in
+					Array2.set new_buf x y new_val
         done
       done);
       Float {width = img'.width; height = img'.height; channels = 1; cmode = Gray;
         data = genarray_of_array2 new_buf}
     end
-
-(* convert grayscale image to RGB *)
-let convert_color_gray_rgb img =
-  ()
-
-(* convert RGB image to HSV *)
-let convert_color_rgb_hsv img =
-  ()
-
-(* convert HSV image to RGB *)
-let convert_color_hsv_rgb img =
-    ()
+*)
 
 (** convert color mode to given destination mode
  * the image data is copied into a new image struct *)
 let convert_color ~src_mode ~dest_mode img =
   match (src_mode, dest_mode) with
-  | (RGB, Gray) -> convert_color_rgb_gray img
+  | (RGB, Gray) -> (match img with
+										| Int _ 	-> convert_int_3_1 ~converter:rgb_to_gray_int
+ 																	~src_mode:RGB ~dest_mode:Gray img
+										| Float _	-> failwith "To be implemented")
   | _           -> failwith "The given color conversion is not supported."
