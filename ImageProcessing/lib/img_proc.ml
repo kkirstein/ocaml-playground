@@ -141,23 +141,53 @@ let convert_int_3_1 ~converter ~src_mode ~dest_mode img =
 			Array2.set new_buf x y new_val
 		done
 	done);
-	Int {width = img'.width; height = img'.height; channels = 1; cmode = Gray;
+	Int {width = img'.width; height = img'.height; channels = 1; cmode = dest_mode;
 		data = genarray_of_array2 new_buf}
 
 let convert_int_1_3 ~converter ~src_mode ~dest_mode img =
 	let img' = check_int ~color_mode:src_mode ~channels:1 img in
-	let buf = array3_of_genarray img'.data in
+	let buf = array2_of_genarray img'.data in
 	let new_buf = Array3.create Bigarray.Int8_unsigned c_layout img'.width img'.height 3 in
 	(for x = 0 to (img'.width - 1) do
 		for y = 0 to (img'.height - 1) do
-			let (a, b, c) = converter Array3.(get buf x y 0, get buf x y 1, get buf x y 2) in
+			let (a, b, c) = converter Array2.(get buf x y) in
 			Array3.set new_buf x y 0 a;
 			Array3.set new_buf x y 1 b;
 			Array3.set new_buf x y 2 c
 		done
 	done);
-	Int {width = img'.width; height = img'.height; channels = 1; cmode = Gray;
+	Int {width = img'.width; height = img'.height; channels = 3; cmode = dest_mode;
 		data = genarray_of_array3 new_buf}
+
+(* color conversion for float images *)
+let convert_float_3_1 ~converter ~src_mode ~dest_mode img =
+	let img' = check_float ~color_mode:src_mode ~channels:3 img in
+	let buf = array3_of_genarray img'.data in
+	let new_buf = Array2.create Bigarray.Float32 c_layout img'.width img'.height in
+	(for x = 0 to (img'.width - 1) do
+		for y = 0 to (img'.height - 1) do
+			let new_val = converter Array3.(get buf x y 0, get buf x y 1, get buf x y 2) in
+			Array2.set new_buf x y new_val
+		done
+	done);
+	Float {width = img'.width; height = img'.height; channels = 1; cmode = dest_mode;
+		data = genarray_of_array2 new_buf}
+
+let convert_float_1_3 ~converter ~src_mode ~dest_mode img =
+	let img' = check_float ~color_mode:src_mode ~channels:1 img in
+	let buf = array2_of_genarray img'.data in
+	let new_buf = Array3.create Bigarray.Float32 c_layout img'.width img'.height 3 in
+	(for x = 0 to (img'.width - 1) do
+		for y = 0 to (img'.height - 1) do
+			let (a, b, c) = converter Array2.(get buf x y) in
+			Array3.set new_buf x y 0 a;
+			Array3.set new_buf x y 1 b;
+			Array3.set new_buf x y 2 c
+		done
+	done);
+	Float {width = img'.width; height = img'.height; channels = 3; cmode = dest_mode;
+		data = genarray_of_array3 new_buf}
+
 
 (*
 let convert_color_rgb_gray img =
@@ -195,5 +225,11 @@ let convert_color ~src_mode ~dest_mode img =
   | (RGB, Gray) -> (match img with
 										| Int _ 	-> convert_int_3_1 ~converter:rgb_to_gray_int
  																	~src_mode:RGB ~dest_mode:Gray img
-										| Float _	-> failwith "To be implemented")
+										| Float _	-> convert_float_3_1 ~converter:rgb_to_gray_float
+ 																	~src_mode:RGB ~dest_mode:Gray img)
+	| (Gray, RGB) -> (match img with
+										| Int _ 	-> convert_int_1_3 ~converter:gray_to_rgb
+ 																	~src_mode:Gray ~dest_mode:RGB img
+										| Float _	-> convert_float_1_3 ~converter:gray_to_rgb
+ 																	~src_mode:Gray ~dest_mode:RGB img)
   | _           -> failwith "The given color conversion is not supported."
