@@ -1,4 +1,5 @@
 true: package(num)
-true: package(oUnit), package(qcheck)
+<bin/test_runner.*>: package(oUnit), package(qcheck)
 true:	bin_annot
 "lib": include
+"bin": include

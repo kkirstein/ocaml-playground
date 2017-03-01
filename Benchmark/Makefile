@@ -43,7 +43,7 @@ debug:
 	$(OCB) $(OCB_FLAGS) -tag debug _build/$(main).byte
 
 run: native
-	_build/$(main).native
+	_build/bin/$(main).native
 
 # build c stubs
 clibs:
@@ -54,10 +54,10 @@ clibs:
 
 # iTeML tests
 $(main_test).ml: $(test_sources)
-	qtest -o $@ extract $^
+	qtest -o ./bin/$@ extract $^
 
 test: clibs $(main_test).ml
 	$(OCB) $(main_test).native $(OCB_FLAGS_TEST)
-	_build/$(main_test).native
+	_build/bin/$(main_test).native
 
 .PHONY: 	all clean byte native clibs profile debug test
