@@ -3,7 +3,7 @@
 #
 
 OCB_FLAGS = -use-ocamlfind -no-links  -lflags lib/perfect_number_stubs.o
-OCB_FLAGS_TEST = -use-ocamlfind -cflags -warn-error,+26 -no-links -lflags lib/perfect_number_stubs.o
+OCB_FLAGS_TEST = -use-ocamlfind -no-links -lflags lib/perfect_number_stubs.o
 OCB = ocamlbuild
 
 # C compiler setup
