@@ -51,17 +51,19 @@ let perfect_numbers n =
 
 (* generate a list of perfect numbers until given upper limit,
  * use C version of predicate *)
-let perfect_numbers_2 n =
+let perfect_numbers_c n =
   let rec loop i =
     if i = n then [] else
     if is_perfect_c i then i :: loop (i+1) else loop (i+1)
   in
   loop 1
-(*$= perfect_numbers_2 as pn & ~printer:pp_list_of_int
+(*$= perfect_numbers_c as pn & ~printer:pp_list_of_int
   [6; 28] (pn 100)
 *)
 
+(*
 external perfect_numbers_c: int -> int list = "perfect_numbers_c"
-(*$= perfect_numbers_c as pn & ~printer:pp_list_of_int
+(* -disabled- $= perfect_numbers_c as pn & ~printer:pp_list_of_int
   [6; 28] (pn 100)
+*)
 *)

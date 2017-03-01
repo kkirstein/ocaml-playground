@@ -31,6 +31,7 @@ CAMLprim value is_perfect_c(value ml_n) {
 }
 
 /** Create a list of perfect numbers upto given limit n */
+/*
 CAMLprim value perfect_numbers_c(value ml_n) {
   CAMLparam1(ml_n);
   CAMLlocal2(res_list, cons);
@@ -51,3 +52,4 @@ CAMLprim value perfect_numbers_c(value ml_n) {
 
   CAMLreturn(res_list);
 }
+*/
