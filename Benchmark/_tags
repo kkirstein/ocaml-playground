@@ -1,4 +1,4 @@
-true: package(num)
+true: package(num), package(lwt), package(ZMQ), package(lwt-zmq)
 <bin/test_runner.*>: package(oUnit), package(qcheck), warn(-29)
 true:	bin_annot
 "lib": include

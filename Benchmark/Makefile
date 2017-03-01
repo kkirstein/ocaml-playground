@@ -13,6 +13,7 @@ CFLAGS = -fPIC
 
 main = benchmark
 main_test = test_runner
+worker = pn_worker
 test_sources = lib/color_map.ml lib/fibonacci.ml \
 	lib/image.ml lib/mandelbrot.ml lib/perfect_number.ml
 clib = perfect_number_stubs
@@ -30,11 +31,13 @@ clean:
 native: clibs
 	rm -f $(main).native
 #	$(OCB) -cflags -ccopt,-fopenmp lib/perfect_number_stubs.o
-	$(OCB)  $(main).native $(OCB_FLAGS)
+	$(OCB) $(main).native $(OCB_FLAGS)
+	$(OCB) $(worker).native $(OCB_FLAGS)
 
 byte: clibs
 	rm -f $(main).byte
 	$(OCB) $(main).byte $(OCB_FLAGS) -lflags -custom
+	$(OCB) $(worker).byte $(OCB_FLAGS) -lflags -custom
 
 profile:
 	$(OCB) $(OCB_FLAGS) -tag profile _build/$(main).native
