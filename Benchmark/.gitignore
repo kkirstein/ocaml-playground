@@ -4,3 +4,6 @@ qtest.targets.log
 
 # generated images
 *.ppm
+
+# generated executables
+dist

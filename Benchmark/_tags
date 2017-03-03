@@ -3,3 +3,4 @@ true: package(num), package(lwt), package(ZMQ), package(lwt-zmq)
 true:	bin_annot
 "lib": include
 "bin": include
+"dist":	not_hygienic

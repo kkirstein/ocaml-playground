@@ -23,10 +23,9 @@ all: native byte # profile debug
 clean:
 	#$(OCB) -clean
 	rm -rf _build
-	rm -f $(main).native
-	rm -f $(main).byte
-	rm -f $(main_test).ml
 
+distclean: clean
+	rm -rf dist
 
 native: clibs
 	rm -f $(main).native
@@ -62,5 +61,13 @@ $(main_test).ml: $(test_sources)
 test: clibs $(main_test).ml
 	$(OCB) $(main_test).native $(OCB_FLAGS_TEST)
 	_build/bin/$(main_test).native
+
+# make distribution package (folder)
+dist: native
+	rm -rf dist
+	mkdir -p dist
+	cp _build/bin/$(main).native ./dist/$(main).exe
+	cp _build/bin/$(worker).native ./dist/$(worker).exe
+	ldd ./dist/$(main).exe ./dist/$(worker).exe | awk '$$2  == "=>" && $$3 !~ /WINDOWS/ && !seen[$$3]++ { print "cp", $$3, "./dist" }' | sh
 
 .PHONY: 	all clean byte native clibs profile debug test
