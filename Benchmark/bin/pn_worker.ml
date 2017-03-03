@@ -11,14 +11,16 @@ let default_port = 5555
 let usage = "Usage: pn_worker [port]"
 
 (* receiver loop *)
-let rec recv_loop s =
+let rec recv_loop s p =
   let open Lwt in
   Lwt_zmq.Socket.recv s >>= fun req ->
     match req with
-    | "end" -> Lwt.return_unit
-    | n     -> let num = int_of_string n in
-                Lwt_io.printlf "Received: %d" num >>= fun () ->
-                Lwt_zmq.Socket.send s (string_of_bool (is_perfect num)) >>= fun () -> recv_loop s
+    | "end" ->  Lwt_io.printf "%d: Stopping\n" p
+    | n     ->  let res = (int_of_string n) |> is_perfect in
+                (if res then Lwt_io.printlf "%d: %s" p n
+                else return_unit) >>= fun () ->
+                Lwt_zmq.Socket.send s (string_of_bool res) >>= fun () ->
+                recv_loop s p
 
 (* main entry point *)
 let () =
@@ -35,5 +37,7 @@ let () =
     ZMQ.Socket.bind socket ("tcp://127.0.0.1:" ^ (string_of_int port));
     Lwt_io.printlf "Listening on port: %d\n" port >>= fun () ->
     let lwt_socket = Lwt_zmq.Socket.of_socket socket in
-    recv_loop lwt_socket
+    recv_loop lwt_socket port >>= fun () ->
+    ZMQ.Socket.close socket;
+    ZMQ.Context.terminate z |> return
   end
