@@ -18,6 +18,9 @@ let string_of_int_list l =
 let lwt_newline () =
   Lwt_io.printl ""
 
+let start_worker port =
+  Lwt_unix.system ("start /B pn_worker.exe " ^ (string_of_int port))
+
 (* some config params *)
 let pn_limit = 10000
 let num_worker = 4
@@ -51,9 +54,10 @@ let () = Lwt_main.run begin
   lwt_time_it Perfect_number.perfect_numbers_c pn_limit >>= fun res ->
   Lwt_io.printf "perfect_numbers_c(%d) = %s (Elapsed time %.3fs)\n"
     pn_limit (string_of_int_list res.result) res.elapsed >>= fun () ->
+
   Lwt_io.printf "Starting worker on ports (%s) .."
     (string_of_int_list (worker_ports num_worker)) >>= fun () ->
-  Lwt_list.iter_s (fun el -> return_unit) (worker_ports num_worker) >>= fun () ->
+  Lwt_list.map_s start_worker (worker_ports num_worker) >>= fun _ ->
   Lwt_io.printl " done." >>= fun () ->
   lwt_time_it (Perfect_number.perfect_numbers_zmq (worker_ports num_worker)) pn_limit >>= fun res ->
   bind res.result (fun r -> Lwt_io.printf "perfect_numbers_zmq(%d) = %s (Elapsed time %.3fs)\n"
