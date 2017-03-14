@@ -6,6 +6,7 @@
 *)
 
 open Time_it
+open Cmdliner
 
 (* print_list
  * A helper function to print a list of int
@@ -21,6 +22,7 @@ let lwt_newline () =
 let start_worker port =
   Lwt_unix.system ("start /B pn_worker.exe " ^ (string_of_int port))
 
+
 (* some config params *)
 let pn_limit = 10000
 let num_worker = 4
@@ -29,8 +31,9 @@ let rec worker_ports ?(base=5550) num =
   | 0 -> []
   | _ -> (base + num) :: worker_ports ~base (num - 1)
 
+
 (* main entry point *)
-let () = Lwt_main.run begin
+let bench enable_pn_worker = Lwt_main.run begin
   let open Lwt in
   Lwt_io.printl "Fibonacci numbers" >>= fun () ->
   Lwt_io.printl "=================" >>= fun () ->
@@ -55,13 +58,16 @@ let () = Lwt_main.run begin
   Lwt_io.printf "perfect_numbers_c(%d) = %s (Elapsed time %.3fs)\n"
     pn_limit (string_of_int_list res.result) res.elapsed >>= fun () ->
 
-  Lwt_io.printf "Starting worker on ports (%s) .."
-    (string_of_int_list (worker_ports num_worker)) >>= fun () ->
-  Lwt_list.map_s start_worker (worker_ports num_worker) >>= fun _ ->
-  Lwt_io.printl " done." >>= fun () ->
-  lwt_time_it (Perfect_number.perfect_numbers_zmq (worker_ports num_worker)) pn_limit >>= fun res ->
-  bind res.result (fun r -> Lwt_io.printf "perfect_numbers_zmq(%d) = %s (Elapsed time %.3fs)\n"
-    pn_limit (string_of_int_list r) res.elapsed) >>= fun () ->
+  if enable_pn_worker then begin
+    Lwt_io.printf "Starting worker on ports (%s) .."
+      (string_of_int_list (worker_ports num_worker)) >>= fun () ->
+    Lwt_list.map_s start_worker (worker_ports num_worker) >>= fun _ ->
+    Lwt_io.printl " done." >>= fun () ->
+    lwt_time_it (Perfect_number.perfect_numbers_zmq (worker_ports num_worker)) pn_limit >>= fun res ->
+    bind res.result (fun r -> Lwt_io.printf "perfect_numbers_zmq(%d) = %s (Elapsed time %.3fs)\n"
+      pn_limit (string_of_int_list r) res.elapsed)
+  end
+  else return_unit >>= fun () ->
 
   Lwt_io.printl "" >>= fun () ->
   Lwt_io.printl "Mandelbrot set" >>= fun () ->
@@ -77,3 +83,32 @@ let () = Lwt_main.run begin
   Lwt_io.printl "Press ENTER to continue.." >>= fun () ->
   Lwt_io.read_char Lwt_io.stdin >>= fun c -> Lwt.return_unit
 end
+
+
+(* cmdliner options *)
+let enable_pn_worker =
+  let doc = "Use multiple workers to calculate perfect numbers" in
+  Arg.(value & flag & info ["enable_pn_worker"] ~docv:"PN_WORKER" ~doc)
+
+let cmd =
+  let doc = "A set of benchmarks, implemented in OCaml" in
+  let man = [
+    `S "DESCRIPTION";
+    `P "$(tname) executes a small number of (micro-) benchmarks.
+        This command-line tool alse serves as a demonstrator
+        for various programming techniques in the OCaml programming
+        language.";
+    `P "If $(b,PN_WORKER) is given, perfect numbers are additionally
+        calculated by starting multiple worker processes in parallel.
+        Communication is done via ZMQ.";
+    `P "The benchmark results are written to STDOUT"]
+  in
+  Term.(const bench $ enable_pn_worker),
+  Term.info  "benchmark" ~version:"0.1.0" ~doc ~man
+
+
+(* start main *)
+let () =
+  match Term.eval cmd with
+    | `Error _  -> exit 1
+    | _         -> exit 0
