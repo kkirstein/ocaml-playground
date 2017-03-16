@@ -2,6 +2,14 @@
 # Makefile for Machine Learning tools
 #
 
+# platform dependent settings
+UNAME_S = $(shell uname -s)
+ifeq (UNAME_S, win)
+	EXT_EXE = .exe
+else
+	EXT_EXE = 
+endif
+
 OCB_FLAGS = -use-ocamlfind -no-links  -lflags lib/perfect_number_stubs.o
 OCB_FLAGS_TEST = -use-ocamlfind -no-links -lflags lib/perfect_number_stubs.o
 OCB = ocamlbuild
@@ -66,8 +74,8 @@ test: clibs $(main_test).ml
 dist: native
 	rm -rf dist
 	mkdir -p dist
-	cp _build/bin/$(main).native ./dist/$(main).exe
-	cp _build/bin/$(worker).native ./dist/$(worker).exe
-	ldd ./dist/$(main).exe ./dist/$(worker).exe | awk '$$2  == "=>" && $$3 !~ /WINDOWS/ && !seen[$$3]++ { print "cp", $$3, "./dist" }' | sh
+	cp _build/bin/$(main).native ./dist/$(main)$(EXT_EXE)
+	cp _build/bin/$(worker).native ./dist/$(worker)$(EXT_EXE)
+	ldd ./dist/$(main)$(EXT_EXE) ./dist/$(worker)$(EXT_EXE) | awk '$$2  == "=>" && $$3 !~ /WINDOWS/ && $$3 ~/^\// && !seen[$$3]++ { print "cp", $$3, "./dist" }' | sh
 
 .PHONY: 	all clean byte native clibs profile debug test

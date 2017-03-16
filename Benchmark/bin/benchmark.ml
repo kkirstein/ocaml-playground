@@ -19,9 +19,6 @@ let string_of_int_list l =
 let lwt_newline () =
   Lwt_io.printl ""
 
-let start_worker port =
-  Lwt_unix.system ("start /B pn_worker.exe " ^ (string_of_int port))
-
 
 (* some config params *)
 let pn_limit = 10000
@@ -61,7 +58,7 @@ let bench enable_pn_worker = Lwt_main.run begin
   if enable_pn_worker then begin
     Lwt_io.printf "Starting worker on ports (%s) .."
       (string_of_int_list (worker_ports num_worker)) >>= fun () ->
-    Lwt_list.map_s start_worker (worker_ports num_worker) >>= fun _ ->
+    Lwt_list.map_s Perfect_number.start_worker (worker_ports num_worker) >>= fun _ ->
     Lwt_io.printl " done." >>= fun () ->
     lwt_time_it (Perfect_number.perfect_numbers_zmq (worker_ports num_worker)) pn_limit >>= fun res ->
     bind res.result (fun r -> Lwt_io.printf "perfect_numbers_zmq(%d) = %s (Elapsed time %.3fs)\n"
@@ -88,7 +85,7 @@ end
 (* cmdliner options *)
 let enable_pn_worker =
   let doc = "Use multiple workers to calculate perfect numbers" in
-  Arg.(value & flag & info ["enable_pn_worker"] ~docv:"PN_WORKER" ~doc)
+  Arg.(value & flag & info ["enable-pn-worker"] ~docv:"PN_WORKER" ~doc)
 
 let cmd =
   let doc = "A set of benchmarks, implemented in OCaml" in
