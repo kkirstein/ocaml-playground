@@ -7,10 +7,10 @@ UNAME_S = $(shell uname -s)
 ifeq (UNAME_S, win)
 	EXT_EXE = .exe
 else
-	EXT_EXE = 
+	EXT_EXE =
 endif
 
-OCB_FLAGS = -use-ocamlfind -no-links  -lflags lib/perfect_number_stubs.o
+OCB_FLAGS = -use-ocamlfind -no-links -lflags lib/perfect_number_stubs.o
 OCB_FLAGS_TEST = -use-ocamlfind -no-links -lflags lib/perfect_number_stubs.o
 OCB = ocamlbuild
 

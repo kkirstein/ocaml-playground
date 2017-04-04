@@ -1,5 +1,6 @@
-true: package(num), package(cmdliner)
+true: package(num)
 true: package(lwt), package(ZMQ), package(lwt-zmq)
+<bin/*>: package(cmdliner)
 <bin/test_runner.*>: package(oUnit), package(qcheck), warn(-29)
 true:	bin_annot
 "lib": include
