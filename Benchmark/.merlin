@@ -2,4 +2,4 @@ S lib/*
 B _build/**
 PKG num
 PKG cmdliner
-PKG lwt lwt-zmq ZMQ
+PKG lwt lwt-zmq ZMQ lwt.ppx

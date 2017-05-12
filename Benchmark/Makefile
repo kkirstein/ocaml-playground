@@ -3,8 +3,8 @@
 #
 
 # platform dependent settings
-UNAME_S = $(shell uname -s)
-ifeq (UNAME_S, win)
+UNAME_O = $(shell uname -o)
+ifeq ($(UNAME_O), Cygwin)
 	EXT_EXE = .exe
 else
 	EXT_EXE =

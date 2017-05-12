@@ -35,15 +35,16 @@ let bench enable_pn_worker = Lwt_main.run begin
   Lwt_io.printl "Fibonacci numbers" >>= fun () ->
   Lwt_io.printl "=================" >>= fun () ->
 
-  lwt_time_it Fibonacci.fib_naive 35 >>= fun res ->
+  let%lwt res_fib_naive = lwt_time_it Fibonacci.fib_naive 35
+  and res_fib = lwt_time_it Fibonacci.fib 35
+  and res_fib_2 = lwt_time_it Fibonacci.fib 1000
+  in
   Lwt_io.printf "fib_naive(35) = %d (Elapsed time %.3fs)\n"
-    res.result res.elapsed >>= fun () ->
-  lwt_time_it Fibonacci.fib 35 >>= fun res ->
+    res_fib_naive.result res_fib_naive.elapsed >>= fun () ->
   Lwt_io.printf "fib(35) = %s (Elapsed time %.3fs)\n"
-    (Big_int.string_of_big_int res.result) res.elapsed >>= fun () ->
-  lwt_time_it Fibonacci.fib 1000 >>= fun res ->
+    (Big_int.string_of_big_int res_fib.result) res_fib.elapsed >>= fun () ->
   Lwt_io.printf "fib(1000) = %s (Elapsed time %.3fs)\n"
-    (Big_int.string_of_big_int res.result) res.elapsed >>= fun () ->
+    (Big_int.string_of_big_int res_fib_2.result) res_fib_2.elapsed >>= fun () ->
   Lwt_io.printl "" >>= fun () ->
 
   Lwt_io.printl "Perfect numbers" >>= fun () ->
@@ -73,12 +74,12 @@ let bench enable_pn_worker = Lwt_main.run begin
   Lwt_io.printf "mandelbrot(640x480) (Elapsed time %.3fs)\n" res.elapsed >>= fun () ->
   lwt_time_it (fun _ -> Mandelbrot.mandelbrot 1920 1200 (-0.5) 0.0 (4.0/.1200.)) () >>= fun res ->
   Lwt_io.printf "mandelbrot(1920x1200) (Elapsed time %.3fs)\n" res.elapsed >>= fun () ->
-  return (Image.write_ppm res.result "mandelbrot_640_480.ppm") >>= fun () ->
+  return (Image.write_ppm res.result "mandelbrot_640_480.ppm") (* >>= fun () ->
 
   Lwt_io.printl "" >>= fun () ->
 
   Lwt_io.printl "Press ENTER to continue.." >>= fun () ->
-  Lwt_io.read_char Lwt_io.stdin >>= fun c -> Lwt.return_unit
+  Lwt_io.read_char Lwt_io.stdin >>= fun c -> Lwt.return_unit *)
 end
 
 
