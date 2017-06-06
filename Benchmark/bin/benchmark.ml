@@ -32,8 +32,8 @@ let rec worker_ports ?(base=5550) num =
 (* main entry point *)
 let bench enable_pn_worker = Lwt_main.run begin
     let open Lwt in
-    Lwt_io.printl "Fibonacci numbers" >>= fun () ->
-    Lwt_io.printl "=================" >>= fun () ->
+    let%lwt () = Lwt_io.printl "Fibonacci numbers"
+    and () = Lwt_io.printl "=================" in
 
     let%lwt res_fib_naive = lwt_time_it Fibonacci.fib_naive 35
     and res_fib = lwt_time_it Fibonacci.fib 35
@@ -48,14 +48,16 @@ let bench enable_pn_worker = Lwt_main.run begin
     Lwt_io.printl "" >>= fun () ->
     Lwt_io.flush Lwt_io.stdout >>= fun () ->
 
-    Lwt_io.printl "Perfect numbers" >>= fun () ->
-    Lwt_io.printl "===============" >>= fun () ->
-    lwt_time_it Perfect_number.perfect_numbers pn_limit >>= fun res ->
-    Lwt_io.printf "perfect_numbers(%d) = %s (Elapsed time %.3fs)\n"
-      pn_limit (string_of_int_list res.result) res.elapsed >>= fun () ->
-    lwt_time_it Perfect_number.perfect_numbers_c pn_limit >>= fun res ->
-    Lwt_io.printf "perfect_numbers_c(%d) = %s (Elapsed time %.3fs)\n"
-      pn_limit (string_of_int_list res.result) res.elapsed >>= fun () ->
+    let%lwt () = Lwt_io.printl "Perfect numbers"
+    and () = Lwt_io.printl "===============" in
+
+    let%lwt res_pn_1 = lwt_time_it Perfect_number.perfect_numbers pn_limit
+    and res_pn_2 = lwt_time_it Perfect_number.perfect_numbers_c pn_limit
+    in
+    let%lwt () = Lwt_io.printf "perfect_numbers(%d) = %s (Elapsed time %.3fs)\n"
+        pn_limit (string_of_int_list res_pn_1.result) res_pn_1.elapsed
+    and () = Lwt_io.printf "perfect_numbers_c(%d) = %s (Elapsed time %.3fs)\n"
+      pn_limit (string_of_int_list res_pn_2.result) res_pn_2.elapsed in
 
     if enable_pn_worker then begin
       Lwt_io.printf "Starting worker on ports (%s) .."
