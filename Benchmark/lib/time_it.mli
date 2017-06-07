@@ -12,7 +12,3 @@ type 'a t = {
 
 (** Calls the given function and returns its result and elapsed time in seconds *)
 val time_it : ?tfun:(unit -> float) -> ('a -> 'b) -> 'a -> 'b t
-
-(** Calls the given function and returns its result and elapsed time in seconds
-  * wrapped in a Lwt thread *)
-val lwt_time_it : ?tfun:(unit -> float) -> ('a -> 'b) -> 'a -> 'b t Lwt.t

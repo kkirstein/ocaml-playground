@@ -19,9 +19,9 @@ CC = $(shell ocamlc -config | awk 'BEGIN {FS=":"} /native_c_compiler/ { print $$
 #CFLAGS = -cflags -ccopt,-static,-ccopt,-fopenmp
 CFLAGS = -fPIC
 
-main = benchmark
+main = lwt_benchmark
 main_test = test_runner
-worker = pn_worker
+worker = lwt_pn_worker
 test_sources = lib/color_map.ml lib/fibonacci.ml \
 	lib/image.ml lib/mandelbrot.ml lib/perfect_number.ml
 clib = perfect_number_stubs

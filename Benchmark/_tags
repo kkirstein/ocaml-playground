@@ -1,7 +1,12 @@
 true: package(num)
 true: package(lwt), package(lwt.ppx), package(ZMQ), package(lwt-zmq)
+
+<bin/lwt_*>: package(lwt), package(lwt.ppx)
+<lib/lwt_*>: package(lwt), package(lwt.ppx)
+<lib/lwt_perfect_number.*>: package(ZMQ), package(lwt-zmq)
 <bin/*>: package(cmdliner)
 <bin/test_runner.*>: package(oUnit), package(qcheck), warn(-29)
+
 true:	bin_annot
 "lib": include
 "bin": include

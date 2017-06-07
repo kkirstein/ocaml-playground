@@ -17,7 +17,3 @@ let time_it ?(tfun=Sys.time) action arg =
   let res = action arg in
   let finish_time = tfun () in
   {elapsed = finish_time -. start_time; result = res}
-
-(* async version of time_it, utilizing Lwt *)
-let lwt_time_it ?(tfun=Sys.time) action arg =
-  Lwt.return (time_it ~tfun action arg)
