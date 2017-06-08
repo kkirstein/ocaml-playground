@@ -30,65 +30,47 @@ let rec worker_ports ?(base=5550) num =
 
 
 (* main entry point *)
-let bench enable_pn_worker = Lwt_main.run begin
-    let open Lwt in
-    let%lwt () = Lwt_io.printl "Fibonacci numbers"
-    and () = Lwt_io.printl "=================" in
+let bench = begin
+  print_endline "Fibonacci numbers";
+  print_endline "=================";
 
-    let%lwt res_fib_naive = lwt_time_it Fibonacci.fib_naive 35
-    and res_fib = lwt_time_it Fibonacci.fib 35
-    and res_fib_2 = lwt_time_it Fibonacci.fib 1000
-    in
-    Lwt_io.printf "fib_naive(35) = %d (Elapsed time %.3fs)\n"
-      res_fib_naive.result res_fib_naive.elapsed >>= fun () ->
-    Lwt_io.printf "fib(35) = %s (Elapsed time %.3fs)\n"
-      (Big_int.string_of_big_int res_fib.result) res_fib.elapsed >>= fun () ->
-    Lwt_io.printf "fib(1000) = %s (Elapsed time %.3fs)\n"
-      (Big_int.string_of_big_int res_fib_2.result) res_fib_2.elapsed >>= fun () ->
-    Lwt_io.printl "" >>= fun () ->
-    Lwt_io.flush Lwt_io.stdout >>= fun () ->
+  let res_fib_naive = time_it Fibonacci.fib_naive 35
+  and res_fib = time_it Fibonacci.fib 35
+  and res_fib_2 = time_it Fibonacci.fib 1000
+  in
+  Printf.printf "fib_naive(35) = %d (Elapsed time %.3fs)\n"
+    res_fib_naive.result res_fib_naive.elapsed;
+  Printf.printf "fib(35) = %s (Elapsed time %.3fs)\n"
+    (Big_int.string_of_big_int res_fib.result) res_fib.elapsed;
+  Printf.printf "fib(1000) = %s (Elapsed time %.3fs)\n"
+    (Big_int.string_of_big_int res_fib_2.result) res_fib_2.elapsed;
+  print_endline "";
 
-    let%lwt () = Lwt_io.printl "Perfect numbers"
-    and () = Lwt_io.printl "===============" in
+  print_endline "Perfect numbers";
+  print_endline "===============";
 
-    let%lwt res_pn_1 = lwt_time_it Perfect_number.perfect_numbers pn_limit
-    and res_pn_2 = lwt_time_it Perfect_number.perfect_numbers_c pn_limit
-    in
-    let%lwt () = Lwt_io.printf "perfect_numbers(%d) = %s (Elapsed time %.3fs)\n"
-        pn_limit (string_of_int_list res_pn_1.result) res_pn_1.elapsed
-    and () = Lwt_io.printf "perfect_numbers_c(%d) = %s (Elapsed time %.3fs)\n"
-      pn_limit (string_of_int_list res_pn_2.result) res_pn_2.elapsed in
-
-    if enable_pn_worker then begin
-      Lwt_io.printf "Starting worker on ports (%s) .."
-        (string_of_int_list (worker_ports num_worker)) >>= fun () ->
-      Lwt_list.map_s Perfect_number.start_worker (worker_ports num_worker) >>= fun _ ->
-      Lwt_io.printl " done." >>= fun () ->
-      lwt_time_it (Perfect_number.perfect_numbers_zmq (worker_ports num_worker)) pn_limit >>= fun res ->
-      bind res.result (fun r -> Lwt_io.printf "perfect_numbers_zmq(%d) = %s (Elapsed time %.3fs)\n"
-                          pn_limit (string_of_int_list r) res.elapsed)
-    end
-    else return_unit >>= fun () ->
-
-      Lwt_io.printl "" >>= fun () ->
-      Lwt_io.flush Lwt_io.stdout >>= fun () ->
+  let res_pn_1 = time_it Perfect_number.perfect_numbers pn_limit
+  and res_pn_2 = time_it Perfect_number.perfect_numbers_c pn_limit
+  in
+  Printf.printf "perfect_numbers(%d) = %s (Elapsed time %.3fs)\n"
+    pn_limit (string_of_int_list res_pn_1.result) res_pn_1.elapsed;
+  Printf.printf "perfect_numbers_c(%d) = %s (Elapsed time %.3fs)\n"
+    pn_limit (string_of_int_list res_pn_2.result) res_pn_2.elapsed;
 
 
-      Lwt_io.printl "Mandelbrot set" >>= fun () ->
-      Lwt_io.printl "==============" >>= fun () ->
-      lwt_time_it (fun _ -> Mandelbrot.mandelbrot 640 480 (-0.5) 0.0 (4.0/.640.)) () >>= fun res ->
-      Lwt_io.printf "mandelbrot(640x480) (Elapsed time %.3fs)\n" res.elapsed >>= fun () ->
-      lwt_time_it (fun _ -> Mandelbrot.mandelbrot 1920 1200 (-0.5) 0.0 (4.0/.1200.)) () >>= fun res ->
-      Lwt_io.printf "mandelbrot(1920x1200) (Elapsed time %.3fs)\n" res.elapsed >>= fun () ->
-      return (Image.write_ppm res.result "mandelbrot_640_480.ppm")
-  end
+  print_endline "";
 
+  print_endline "Mandelbrot set";
+  print_endline "==============";
+  let res_mandel_1 = time_it (fun _ -> Mandelbrot.mandelbrot 640 480 (-0.5) 0.0 (4.0/.640.)) ()
+  and res_mandel_2 = time_it (fun _ -> Mandelbrot.mandelbrot 1920 1200 (-0.5) 0.0 (4.0/.1200.)) ()
+  in
+  Printf.printf "mandelbrot(640x480) (Elapsed time %.3fs)\n" res_mandel_1.elapsed;
+  Printf.printf "mandelbrot(1920x1200) (Elapsed time %.3fs)\n" res_mandel_2.elapsed;
+  Image.write_ppm res_mandel_1.result "mandelbrot_640_480.ppm";
+end
 
 (* cmdliner options *)
-let enable_pn_worker =
-  let doc = "Use multiple workers to calculate perfect numbers" in
-  Arg.(value & flag & info ["enable-pn-worker"] ~docv:"PN_WORKER" ~doc)
-
 let cmd =
   let doc = "A set of benchmarks, implemented in OCaml" in
   let man = [
@@ -102,7 +84,7 @@ let cmd =
         Communication is done via ZMQ.";
     `P "The benchmark results are written to STDOUT"]
   in
-  Term.(const bench $ enable_pn_worker),
+  Term.(const bench),
   Term.info  "benchmark" ~version:"0.1.0" ~doc ~man
 
 

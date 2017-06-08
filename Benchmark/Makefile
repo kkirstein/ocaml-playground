@@ -19,7 +19,8 @@ CC = $(shell ocamlc -config | awk 'BEGIN {FS=":"} /native_c_compiler/ { print $$
 #CFLAGS = -cflags -ccopt,-static,-ccopt,-fopenmp
 CFLAGS = -fPIC
 
-main = lwt_benchmark
+main_lwt = lwt_benchmark
+main = benchmark
 main_test = test_runner
 worker = lwt_pn_worker
 test_sources = lib/color_map.ml lib/fibonacci.ml \
@@ -36,14 +37,14 @@ distclean: clean
 	rm -rf dist
 
 native: clibs
-	rm -f $(main).native
 #	$(OCB) -cflags -ccopt,-fopenmp lib/perfect_number_stubs.o
 	$(OCB) $(main).native $(OCB_FLAGS)
+	$(OCB) $(main_lwt).native $(OCB_FLAGS)
 	$(OCB) $(worker).native $(OCB_FLAGS)
 
 byte: clibs
-	rm -f $(main).byte
 	$(OCB) $(main).byte $(OCB_FLAGS) -lflags -custom
+	$(OCB) $(main_lwt).byte $(OCB_FLAGS) -lflags -custom
 	$(OCB) $(worker).byte $(OCB_FLAGS) -lflags -custom
 
 profile:
@@ -54,6 +55,9 @@ debug:
 
 run: native
 	_build/bin/$(main).native
+
+run_async: native
+	_build/bin/$(main_lwt).native
 
 # build c stubs
 clibs:
@@ -75,7 +79,9 @@ dist: native
 	rm -rf dist
 	mkdir -p dist
 	cp _build/bin/$(main).native ./dist/$(main)$(EXT_EXE)
+	cp _build/bin/$(main_lwt).native ./dist/$(main_lwt)$(EXT_EXE)
 	cp _build/bin/$(worker).native ./dist/$(worker)$(EXT_EXE)
-	ldd ./dist/$(main)$(EXT_EXE) ./dist/$(worker)$(EXT_EXE) | awk '$$2  == "=>" && $$3 !~ /WINDOWS/ && $$3 ~/^\// && !seen[$$3]++ { print "cp", $$3, "./dist" }' | sh
+	ldd ./dist/$(main)$(EXT_EXE) ./dist/$(main_lwt)$(EXT_EXE) ./dist/$(worker)$(EXT_EXE) \
+	 | awk '$$2  == "=>" && $$3 !~ /WINDOWS/ && $$3 ~/^\// && !seen[$$3]++ { print "cp", $$3, "./dist" }' | sh
 
 .PHONY: 	all clean byte native clibs profile debug test
