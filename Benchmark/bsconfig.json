@@ -1,0 +1,4 @@
+{
+  "name": "benchmark",
+  "sources": { "dir": "bin"}
+}

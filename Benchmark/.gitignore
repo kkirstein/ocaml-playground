@@ -7,3 +7,6 @@ qtest.targets.log
 
 # generated executables
 dist
+
+# node.js
+node_modules

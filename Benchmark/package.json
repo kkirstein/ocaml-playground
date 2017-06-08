@@ -1,0 +1,20 @@
+{
+  "name": "benchmark",
+  "version": "1.0.0",
+  "description": "A set of micro benchmarks fro Bucklescript",
+  "main": "benchmark.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "bsb",
+    "watch": "bsb -w"
+  },
+  "keywords": [
+    "benchmark",
+    "bucklescript"
+  ],
+  "author": "Kay-Uwe kirstein",
+  "license": "MIT",
+  "dependencies": {
+    "bs-platform": "1.7.4"
+  }
+}
