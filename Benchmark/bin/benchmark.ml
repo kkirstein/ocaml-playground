@@ -5,7 +5,6 @@
  * programming language
 *)
 
-open Time_it
 open Cmdliner
 
 (* print_list
@@ -31,6 +30,7 @@ let rec worker_ports ?(base=5550) num =
 
 (* main entry point *)
 let bench = begin
+  let open Time_it in
   print_endline "Fibonacci numbers";
   print_endline "=================";
 
@@ -79,9 +79,6 @@ let cmd =
         This command-line tool alse serves as a demonstrator
         for various programming techniques in the OCaml programming
         language.";
-    `P "If $(b,PN_WORKER) is given, perfect numbers are additionally
-        calculated by starting multiple worker processes in parallel.
-        Communication is done via ZMQ.";
     `P "The benchmark results are written to STDOUT"]
   in
   Term.(const bench),
@@ -93,3 +90,4 @@ let () =
   match Term.eval cmd with
   | `Error _  -> exit 1
   | _         -> exit 0
+
