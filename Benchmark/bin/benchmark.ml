@@ -15,10 +15,6 @@ let print_int_list out_channel l =
 let string_of_int_list l =
   String.concat " " (List.map string_of_int l)
 
-let lwt_newline () =
-  Lwt_io.printl ""
-
-
 (* some config params *)
 let pn_limit = 10000
 let num_worker = 4
