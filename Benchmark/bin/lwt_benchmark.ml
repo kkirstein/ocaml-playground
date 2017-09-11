@@ -58,18 +58,20 @@ let bench enable_pn_worker = Lwt_main.run begin
     let%lwt () = Lwt_io.printf "perfect_numbers(%d) = %s (Elapsed time %.3fs)\n"
         pn_limit (string_of_int_list res_pn_1.result) res_pn_1.elapsed
     and () = Lwt_io.printf "perfect_numbers_c(%d) = %s (Elapsed time %.3fs)\n"
-      pn_limit (string_of_int_list res_pn_2.result) res_pn_2.elapsed in
+        pn_limit (string_of_int_list res_pn_2.result) res_pn_2.elapsed
+    in
 
-    if enable_pn_worker then begin
-      Lwt_io.printf "Starting worker on ports (%s) .."
-        (string_of_int_list (worker_ports num_worker)) >>= fun () ->
+    let%lwt () = if enable_pn_worker then begin
+      (* Lwt_io.printf "Starting worker on ports (%s) .."
+        (string_of_int_list (worker_ports num_worker)) >>= fun () -> *)
       Lwt_list.map_s Lwt_perfect_number.start_worker (worker_ports num_worker) >>= fun _ ->
-      Lwt_io.printl " done." >>= fun () ->
+      (* Lwt_io.printl " done." >>= fun () -> *)
       lwt_time_it (Lwt_perfect_number.perfect_numbers_zmq (worker_ports num_worker)) pn_limit >>= fun res ->
       bind res.result (fun r -> Lwt_io.printf "perfect_numbers_zmq(%d) = %s (Elapsed time %.3fs)\n"
                           pn_limit (string_of_int_list r) res.elapsed)
     end
-    else return_unit >>= fun () ->
+    else return_unit
+    in
 
       Lwt_io.printl "" >>= fun () ->
       Lwt_io.flush Lwt_io.stdout >>= fun () ->
