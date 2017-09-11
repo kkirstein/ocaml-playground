@@ -22,7 +22,7 @@ let rec recv_loop ~verbose s p =
   match req with
   | "end" ->  lwt_verbose ~verbose (Printf.sprintf "%d: Stopping\n" p)
   | n     ->  let res = (int_of_string n) |> is_perfect in
-    (if res then Lwt_io.printlf "%d: %s" p n
+    (if res then lwt_verbose ~verbose (Printf.sprintf "%d: %s" p n)
      else return_unit) >>= fun () ->
     Lwt_zmq.Socket.send s (string_of_bool res) >>= fun () ->
     recv_loop ~verbose s p
