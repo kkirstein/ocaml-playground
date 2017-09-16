@@ -1,7 +1,0 @@
-# generated test files
-test_runner.ml
-qtest.targets.log
-
-# generated images
-*.ppm
-test_output
