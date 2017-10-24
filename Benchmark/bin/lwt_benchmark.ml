@@ -61,36 +61,33 @@ let bench enable_pn_worker = Lwt_main.run begin
         pn_limit (string_of_int_list res_pn_2.result) res_pn_2.elapsed
     in
 
-    let%lwt () = if enable_pn_worker then begin
-      (* Lwt_io.printf "Starting worker on ports (%s) .."
-        (string_of_int_list (worker_ports num_worker)) >>= fun () -> *)
-      Lwt_list.map_s Lwt_perfect_number.start_worker (worker_ports num_worker) >>= fun _ ->
-      (* Lwt_io.printl " done." >>= fun () -> *)
-      lwt_time_it (Lwt_perfect_number.perfect_numbers_zmq (worker_ports num_worker)) pn_limit >>= fun res ->
-      bind res.result (fun r -> Lwt_io.printf "perfect_numbers_zmq(%d) = %s (Elapsed time %.3fs)\n"
-                          pn_limit (string_of_int_list r) res.elapsed)
-    end
-    else return_unit
+    let%lwt () = match enable_pn_worker with
+      | Some num_worker ->
+        Lwt_list.map_s Lwt_perfect_number.start_worker (worker_ports num_worker) >>= fun _ ->
+        lwt_time_it ~tfun:Unix.gettimeofday (Lwt_perfect_number.perfect_numbers_zmq (worker_ports num_worker)) pn_limit >>= fun res ->
+        bind res.result (fun r -> Lwt_io.printf "perfect_numbers_zmq(%d) = %s (Elapsed time %.3fs)\n"
+                            pn_limit (string_of_int_list r) res.elapsed)
+      | None            -> return_unit
     in
 
-      Lwt_io.printl "" >>= fun () ->
-      Lwt_io.flush Lwt_io.stdout >>= fun () ->
+    Lwt_io.printl "" >>= fun () ->
+    Lwt_io.flush Lwt_io.stdout >>= fun () ->
 
 
-      Lwt_io.printl "Mandelbrot set" >>= fun () ->
-      Lwt_io.printl "==============" >>= fun () ->
-      lwt_time_it (fun _ -> Mandelbrot.mandelbrot 640 480 (-0.5) 0.0 (4.0/.640.)) () >>= fun res ->
-      Lwt_io.printf "mandelbrot(640x480) (Elapsed time %.3fs)\n" res.elapsed >>= fun () ->
-      lwt_time_it (fun _ -> Mandelbrot.mandelbrot 1920 1200 (-0.5) 0.0 (4.0/.1200.)) () >>= fun res ->
-      Lwt_io.printf "mandelbrot(1920x1200) (Elapsed time %.3fs)\n" res.elapsed >>= fun () ->
-      return (Image.write_ppm res.result "mandelbrot_640_480.ppm")
+    Lwt_io.printl "Mandelbrot set" >>= fun () ->
+    Lwt_io.printl "==============" >>= fun () ->
+    lwt_time_it (fun _ -> Mandelbrot.mandelbrot 640 480 (-0.5) 0.0 (4.0/.640.)) () >>= fun res ->
+    Lwt_io.printf "mandelbrot(640x480) (Elapsed time %.3fs)\n" res.elapsed >>= fun () ->
+    lwt_time_it (fun _ -> Mandelbrot.mandelbrot 1920 1200 (-0.5) 0.0 (4.0/.1200.)) () >>= fun res ->
+    Lwt_io.printf "mandelbrot(1920x1200) (Elapsed time %.3fs)\n" res.elapsed >>= fun () ->
+    return (Image.write_ppm res.result "mandelbrot_640_480.ppm")
   end
 
 
 (* cmdliner options *)
 let enable_pn_worker =
   let doc = "Use multiple workers to calculate perfect numbers" in
-  Arg.(value & flag & info ["enable-pn-worker"] ~docv:"PN_WORKER" ~doc)
+  Arg.(value & opt ~vopt:(Some 4) (some int) None & info ["enable-pn-worker"] ~docv:"PN_WORKER" ~doc)
 
 let cmd =
   let doc = "A set of benchmarks, implemented in OCaml" in
