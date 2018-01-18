@@ -1,0 +1,7 @@
+(jbuild_version 1)
+
+(library
+ ((name tasks)
+  (libraries (num lwt lwt-zmq))
+  (c_names (perfect_number_stubs))))
+

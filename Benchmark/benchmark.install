@@ -1,0 +1,8 @@
+lib: [
+  "_build/install/default/lib/benchmark/META" {"META"}
+  "_build/install/default/lib/benchmark/opam" {"opam"}
+]
+doc: [
+  "_build/install/default/doc/benchmark/README.md"
+  "_build/install/default/doc/benchmark/LICENSE"
+]
