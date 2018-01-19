@@ -2,5 +2,6 @@
 
 (executables
  ((names (benchmark))
+  (public_names (benchmark))
   (libraries (tasks cmdliner))))
 
