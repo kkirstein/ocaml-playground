@@ -30,9 +30,9 @@ let bench = begin
   print_endline "Fibonacci numbers";
   print_endline "=================";
 
-  let res_fib_naive = time_it Fibonacci.fib_naive 35
-  and res_fib = time_it Fibonacci.fib 35
-  and res_fib_2 = time_it Fibonacci.fib 1000
+  let res_fib_naive = time_it Tasks.Fibonacci.fib_naive 35
+  and res_fib = time_it Tasks.Fibonacci.fib 35
+  and res_fib_2 = time_it Tasks.Fibonacci.fib 1000
   in
   Printf.printf "fib_naive(35) = %d (Elapsed time %.3fs)\n"
     res_fib_naive.result res_fib_naive.elapsed;
@@ -45,8 +45,8 @@ let bench = begin
   print_endline "Perfect numbers";
   print_endline "===============";
 
-  let res_pn_1 = time_it Perfect_number.perfect_numbers pn_limit
-  and res_pn_2 = time_it Perfect_number.perfect_numbers_c pn_limit
+  let res_pn_1 = time_it Tasks.Perfect_number.perfect_numbers pn_limit
+  and res_pn_2 = time_it Tasks.Perfect_number.perfect_numbers_c pn_limit
   in
   Printf.printf "perfect_numbers(%d) = %s (Elapsed time %.3fs)\n"
     pn_limit (string_of_int_list res_pn_1.result) res_pn_1.elapsed;
@@ -58,12 +58,12 @@ let bench = begin
 
   print_endline "Mandelbrot set";
   print_endline "==============";
-  let res_mandel_1 = time_it (fun _ -> Mandelbrot.mandelbrot 640 480 (-0.5) 0.0 (4.0/.640.)) ()
-  and res_mandel_2 = time_it (fun _ -> Mandelbrot.mandelbrot 1920 1200 (-0.5) 0.0 (4.0/.1200.)) ()
+  let res_mandel_1 = time_it (fun _ -> Tasks.Mandelbrot.mandelbrot 640 480 (-0.5) 0.0 (4.0/.640.)) ()
+  and res_mandel_2 = time_it (fun _ -> Tasks.Mandelbrot.mandelbrot 1920 1200 (-0.5) 0.0 (4.0/.1200.)) ()
   in
   Printf.printf "mandelbrot(640x480) (Elapsed time %.3fs)\n" res_mandel_1.elapsed;
   Printf.printf "mandelbrot(1920x1200) (Elapsed time %.3fs)\n" res_mandel_2.elapsed;
-  Image.write_ppm res_mandel_1.result "mandelbrot_640_480.ppm";
+  Tasks.Image.write_ppm res_mandel_1.result "mandelbrot_640_480.ppm";
 end
 
 (* cmdliner options *)

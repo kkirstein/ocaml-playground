@@ -2,3 +2,6 @@ lib: [
   "_build/install/default/lib/benchmark/META" {"META"}
   "_build/install/default/lib/benchmark/opam" {"opam"}
 ]
+bin: [
+  "_build/install/default/bin/benchmark" {"benchmark"}
+]
