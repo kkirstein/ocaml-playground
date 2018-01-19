@@ -6,7 +6,6 @@
 *)
 
 open Lwt_time_it
-open Time_it
 open Cmdliner
 
 (* print_list
@@ -36,9 +35,9 @@ let bench enable_pn_worker = Lwt_main.run begin
     let%lwt () = Lwt_io.printl "Fibonacci numbers"
     and () = Lwt_io.printl "=================" in
 
-    let%lwt res_fib_naive = lwt_time_it Fibonacci.fib_naive 35
-    and res_fib = lwt_time_it Fibonacci.fib 35
-    and res_fib_2 = lwt_time_it Fibonacci.fib 1000
+    let%lwt res_fib_naive = lwt_time_it Tasks.Fibonacci.fib_naive 35
+    and res_fib = lwt_time_it Tasks.Fibonacci.fib 35
+    and res_fib_2 = lwt_time_it Tasks.Fibonacci.fib 1000
     in
     Lwt_io.printf "fib_naive(35) = %d (Elapsed time %.3fs)\n"
       res_fib_naive.result res_fib_naive.elapsed >>= fun () ->
@@ -52,8 +51,8 @@ let bench enable_pn_worker = Lwt_main.run begin
     let%lwt () = Lwt_io.printl "Perfect numbers"
     and () = Lwt_io.printl "===============" in
 
-    let%lwt res_pn_1 = lwt_time_it Perfect_number.perfect_numbers pn_limit
-    and res_pn_2 = lwt_time_it Perfect_number.perfect_numbers_c pn_limit
+    let%lwt res_pn_1 = lwt_time_it Tasks.Perfect_number.perfect_numbers pn_limit
+    and res_pn_2 = lwt_time_it Tasks.Perfect_number.perfect_numbers_c pn_limit
     in
     let%lwt () = Lwt_io.printf "perfect_numbers(%d) = %s (Elapsed time %.3fs)\n"
         pn_limit (string_of_int_list res_pn_1.result) res_pn_1.elapsed
@@ -63,8 +62,8 @@ let bench enable_pn_worker = Lwt_main.run begin
 
     let%lwt () = match enable_pn_worker with
       | Some num_worker ->
-        Lwt_list.map_s Lwt_perfect_number.start_worker (worker_ports num_worker) >>= fun _ ->
-        lwt_time_it ~tfun:Unix.gettimeofday (Lwt_perfect_number.perfect_numbers_zmq (worker_ports num_worker)) pn_limit >>= fun res ->
+        Lwt_list.map_s Tasks.Lwt_perfect_number.start_worker (worker_ports num_worker) >>= fun _ ->
+        lwt_time_it ~tfun:Unix.gettimeofday (Tasks.Lwt_perfect_number.perfect_numbers_zmq (worker_ports num_worker)) pn_limit >>= fun res ->
         bind res.result (fun r -> Lwt_io.printf "perfect_numbers_zmq(%d) = %s (Elapsed time %.3fs)\n"
                             pn_limit (string_of_int_list r) res.elapsed)
       | None            -> return_unit
@@ -76,11 +75,11 @@ let bench enable_pn_worker = Lwt_main.run begin
 
     Lwt_io.printl "Mandelbrot set" >>= fun () ->
     Lwt_io.printl "==============" >>= fun () ->
-    lwt_time_it (fun _ -> Mandelbrot.mandelbrot 640 480 (-0.5) 0.0 (4.0/.640.)) () >>= fun res ->
+    lwt_time_it (fun _ -> Tasks.Mandelbrot.mandelbrot 640 480 (-0.5) 0.0 (4.0/.640.)) () >>= fun res ->
     Lwt_io.printf "mandelbrot(640x480) (Elapsed time %.3fs)\n" res.elapsed >>= fun () ->
-    lwt_time_it (fun _ -> Mandelbrot.mandelbrot 1920 1200 (-0.5) 0.0 (4.0/.1200.)) () >>= fun res ->
+    lwt_time_it (fun _ -> Tasks.Mandelbrot.mandelbrot 1920 1200 (-0.5) 0.0 (4.0/.1200.)) () >>= fun res ->
     Lwt_io.printf "mandelbrot(1920x1200) (Elapsed time %.3fs)\n" res.elapsed >>= fun () ->
-    return (Image.write_ppm res.result "mandelbrot_640_480.ppm")
+    return (Tasks.Image.write_ppm res.result "mandelbrot_640_480.ppm")
   end
 
 
