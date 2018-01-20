@@ -1,8 +1,8 @@
 (jbuild_version 1)
 
 (executables
- ((names (lwt_benchmark))
-  (public_names (lwt_benchmark))
+ ((names (lwt_benchmark lwt_pn_worker))
+  (public_names (lwt_benchmark lwt_pn_worker))
   (libraries (tasks cmdliner lwt))
   (preprocess (pps (lwt.ppx)))))
 

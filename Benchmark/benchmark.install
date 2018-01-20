@@ -4,5 +4,6 @@ lib: [
 ]
 bin: [
   "_build/install/default/bin/lwt_benchmark" {"lwt_benchmark"}
+  "_build/install/default/bin/lwt_pn_worker" {"lwt_pn_worker"}
   "_build/install/default/bin/benchmark" {"benchmark"}
 ]

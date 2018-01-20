@@ -5,7 +5,7 @@
  * comunication is done via zeroMQ messages
 *)
 
-open Perfect_number
+open Tasks.Perfect_number
 open Cmdliner
 
 let default_port = 5555
