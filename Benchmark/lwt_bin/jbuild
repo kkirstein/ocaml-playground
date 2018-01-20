@@ -1,0 +1,8 @@
+(jbuild_version 1)
+
+(executables
+ ((names (lwt_benchmark))
+  (public_names (lwt_benchmark))
+  (libraries (tasks cmdliner lwt))
+  (preprocess (pps (lwt.ppx)))))
+
