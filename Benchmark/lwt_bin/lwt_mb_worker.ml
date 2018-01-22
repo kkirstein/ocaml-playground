@@ -31,9 +31,9 @@ let cmd =
   let doc = "Starts a worker process to calculate a line of a Mandelbrot set" in
   let man = [
     `S "DESCRIPTION";
-    `P "$(tname) reads coordinate infos from the given $(v,INPUT_PORT)
+    `P "$(tname) reads coordinate infos from the given $(b,INPUT_PORT)
         and calcuates the respective pixel values (RGB). The result
-        is sent to the given $(v,OUTPUT_PORT). Communication
+        is sent to the given $(b,OUTPUT_PORT). Communication
         with the worker is done via ZMQ, enabling an asynchronous and parallel
         execution.";
     `P "If $(b,VERBOSE) is given, status information of the worker is

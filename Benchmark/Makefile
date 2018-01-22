@@ -11,7 +11,7 @@ else
 endif
 
 # targets for distribution
-dist_sources = bin/benchmark.exe lwt_bin/lwt_benchmark.exe lwt_bin/lwt_pn_worker.exe
+dist_sources = bin/benchmark.exe lwt_bin/lwt_benchmark.exe lwt_bin/lwt_pn_worker.exe lwt_bin/lwt_mb_worker.exe
 dist_target = $(foreach f,$(dist_sources),./dist/$(basename $(notdir $(f)$(EXT_EXE))))
 main_lwt = lwt_benchmark
 main = benchmark
@@ -51,9 +51,6 @@ dist: build
 	rm -rf dist
 	mkdir -p dist
 	$(foreach f,$(dist_sources),cp _build/default/$(f) ./dist/$(basename $(notdir $(f)))$(EXT_EXE);)
-	#cp _build/default/bin/$(main).exe ./dist/$(main)$(EXT_EXE)
-	#cp _build/default/lwt_bin/$(main_lwt).exe ./dist/$(main_lwt)$(EXT_EXE)
-	#cp _build/default/lwt_bin/$(worker).exe ./dist/$(worker)$(EXT_EXE)
 	ldd $(dist_target) \
 	 | awk '$$2  == "=>" && $$3 !~ /WINDOWS/ && $$3 ~/^\// && !seen[$$3]++ { print "cp", $$3, "./dist" }' | sh
 
