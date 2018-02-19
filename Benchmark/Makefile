@@ -42,9 +42,8 @@ run_async: build
 $(main_test).ml: $(test_sources)
 	qtest -o ./bin/$@ extract $^
 
-test: clibs $(main_test).ml
-	$(OCB) $(main_test).native $(OCB_FLAGS_TEST)
-	_build/bin/$(main_test).native
+test: build
+	jbuilder runtest
 
 # make distribution package (folder)
 dist: build
