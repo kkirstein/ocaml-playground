@@ -12,13 +12,14 @@ let pixel_value x y n_max r_max =
     else loop (Complex.add (Complex.mul z z) z0) (n-1)
   in
   loop Complex.zero n_max
-;;
+
 
 (* select color for given pixel value *)
 let color_of_value value = 
-  if value > Array.length Color_map.plan9 then Image.color_black
-  else Color_map.plan9.(value)
-;;
+  if value >= 255 then Image.color_black
+  else
+    Image.{r = 5 * (value mod 15); g = 32 * (value mod 7); b = 8 * (value mod 31)}
+
 
 let bw_of_value value = 
   if value > 0 then Image.color_white else Image.color_black
