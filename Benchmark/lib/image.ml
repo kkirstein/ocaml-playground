@@ -16,7 +16,7 @@ type image = { width : int; height : int; data : pixel_color array }
 (* generate image data *)
 let make ?color:(color=color_black) width height = 
   { width=width; height=height; data=Array.make (width*height) color }
-;;
+
 
 (* set pixel color *)
 let set_color img x y color =
@@ -24,7 +24,7 @@ let set_color img x y color =
     raise (Invalid_argument "Index out of bound")
   else
     Array.set img.data (x + y*img.width) color
-;;
+
 
 (* map function to all pixels *)
 (*
@@ -35,7 +35,7 @@ let map f img =
       else (ignore(f x y |> set_color img x y); img))
   in
   loop 0 0
-;;
+
 *)
 let map f img =
   for y = 0 to (img.height-1) do
@@ -44,7 +44,7 @@ let map f img =
     done
   done;
   img
-;;
+
 
 (* write image to pnm file *)
 let write_ppm img file_name =
@@ -57,5 +57,5 @@ let write_ppm img file_name =
   with e ->
     close_out_noerr oc;
     raise e
-;;
+
 
