@@ -11,7 +11,7 @@ else
 endif
 
 # targets for distribution
-dist_sources = bin/benchmark.exe lwt_bin/lwt_benchmark.exe lwt_bin/lwt_pn_worker.exe lwt_bin/lwt_mb_worker.exe
+dist_sources = bin/benchmark.exe bin/pn_worker.exe bin/mb_worker.exe
 dist_target = $(foreach f,$(dist_sources),./dist/$(basename $(notdir $(f)$(EXT_EXE))))
 main_lwt = lwt_benchmark
 main = benchmark
@@ -34,13 +34,6 @@ build:
 
 run: build
 	_build/default/bin/$(main).exe
-
-run_async: build
-	_build/default/lwt_bin/$(main_lwt).exe
-
-# iTeML tests
-$(main_test).ml: $(test_sources)
-	qtest -o ./bin/$@ extract $^
 
 test: build
 	jbuilder runtest

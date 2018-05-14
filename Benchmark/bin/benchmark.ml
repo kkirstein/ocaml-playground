@@ -5,7 +5,7 @@
  * programming language
 *)
 
-open Lwt_time_it
+open Time_it
 open Cmdliner
 
 (* print_list

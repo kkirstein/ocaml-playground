@@ -9,9 +9,9 @@
 let start_worker port =
   (* let (>>=) = Lwt.(>>=) in *)
   let cmd_line = match (Sys.unix, Sys.cygwin, Sys.win32) with
-    | (true, _, _)	-> "./lwt_pn_worker " ^ (string_of_int port) ^ " &"
-    | (_, true, _)	-> "./lwt_pn_worker " ^ (string_of_int port) ^ " &"
-    | (_, _, true)	-> "start /B lwt_pn_worker.exe " ^ (string_of_int port)
+    | (true, _, _)	-> "./pn_worker " ^ (string_of_int port) ^ " &"
+    | (_, true, _)	-> "./pn_worker " ^ (string_of_int port) ^ " &"
+    | (_, _, true)	-> "start /B pn_worker.exe " ^ (string_of_int port)
     | (_, _, _)     -> failwith "Unsupport system, cannot start workers" in
   (* Lwt_io.printl cmd_line >>= fun () -> *)
   Lwt_unix.system cmd_line
