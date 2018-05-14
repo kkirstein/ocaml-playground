@@ -22,6 +22,14 @@ let test_make_image () =
   let img = make 640 480 in
   Alcotest.(check int) "check make image width" 640 img.width;
   Alcotest.(check int) "check make image height" 480 img.height;
+  Alcotest.(check pixel) "check make image pixel value"
+    {r=0; g=0; b=0}
+    (get_pixel img 0 0)
+(* ---------------------- *)
+let test_make_image_slow () =
+  let img = make 640 480 in
+  Alcotest.(check int) "check make image width" 640 img.width;
+  Alcotest.(check int) "check make image height" 480 img.height;
   for y = 0 to (img.height - 1) do
     for x = 0 to (img.width - 1) do
       Alcotest.(check pixel) (Printf.sprintf "check make image pixel (%d,%d)" x y)
@@ -31,6 +39,14 @@ let test_make_image () =
   done
 (* ---------------------- *)
 let test_make_image_color () =
+  let img = make ~color:{r=128; g=64; b=240} 320 200 in
+  Alcotest.(check int) "check make image width" 320 img.width;
+  Alcotest.(check int) "check make image height" 200 img.height;
+      Alcotest.(check pixel) "check make image pixel value"
+        {r=128; g=64; b=240}
+        (get_pixel img 0 0)
+(* ---------------------- *)
+let test_make_image_color_slow () =
   let img = make ~color:{r=128; g=64; b=240} 320 200 in
   Alcotest.(check int) "check make image width" 320 img.width;
   Alcotest.(check int) "check make image height" 200 img.height;
@@ -70,6 +86,8 @@ let test_set = [
   "white pixel", `Quick, test_white;
   "make image", `Quick, test_make_image;
   "make image with color", `Quick, test_make_image_color;
+  "make image (slow)", `Slow, test_make_image_slow;
+  "make image with color (slow)", `Slow, test_make_image_color_slow;
   "change pixel color", `Quick, test_set_color;
   "get pixel color", `Quick, test_get_color
 ]

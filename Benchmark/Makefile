@@ -36,7 +36,7 @@ run: build
 	_build/default/bin/$(main).exe
 
 test: build
-	jbuilder runtest
+	ALCOTEST_QUICK_TESTS=1 jbuilder runtest
 
 # make distribution package (folder)
 dist: build
