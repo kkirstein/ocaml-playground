@@ -74,7 +74,7 @@ let write_ppm img file_name =
     Printf.fprintf oc "%d %d %d\n" img.width img.height 255;
     for i = 0 to (img.height * img.width * 3 - 1) do
       Array1.get img.data i |> string_of_int |> output_string oc;
-      if (i mod 24) = 0 then output_char oc '\n' else output_char oc ' '
+      if ((i + 1) mod 24) = 0 then output_char oc '\n' else output_char oc ' '
     done;
     close_out oc
   with e ->
