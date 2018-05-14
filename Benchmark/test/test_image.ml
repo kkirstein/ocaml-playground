@@ -31,13 +31,26 @@ let test_make_image_color () =
   Alcotest.(check int) "check make image height" 200 img.height;
   Alcotest.(check bool) "check make image color" true
     (Array.for_all (fun p -> p = {r=128; g=64; b=240}) img.data)
+(* ---------------------- *)
+let test_set_color () =
+  let img = make 320 200 in
+  set_color img 160 100 {r=128; g=96; b=204};
+  Alcotest.(check pixel) "check changed pixel" {r=128; g=96; b=204}
+    img.data.(160 + 100*img.width);
+  Alcotest.(check pixel) "check changed pixel" {r=0; g=0; b=0}
+    img.data.(0);
+  Alcotest.(check pixel) "check changed pixel" {r=0; g=0; b=0}
+    img.data.(319 + 99*img.width)
+
+
 
 (* Test set *)
 let test_set = [
   "black pixel", `Quick, test_black;
   "white pixel", `Quick, test_white;
   "make image", `Quick, test_make_image;
-  "make image with color", `Quick, test_make_image_color
+  "make image with color", `Quick, test_make_image_color;
+  "change pixel color", `Quick, test_set_color
 ]
 
 
