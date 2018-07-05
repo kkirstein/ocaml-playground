@@ -18,27 +18,27 @@ let lwt_verbose ?(verbose=true) msg =
 (* receiver loop *)
 let rec recv_loop ~verbose s p =
   let open Lwt in
-  Lwt_zmq.Socket.recv s >>= fun req ->
+  Zmq_lwt.Socket.recv s >>= fun req ->
   match req with
   | "end" ->  lwt_verbose ~verbose (Printf.sprintf "%d: Stopping\n" p)
   | n     ->  let res = (int_of_string n) |> is_perfect in
     (if res then lwt_verbose ~verbose (Printf.sprintf "%d: %s" p n)
      else return_unit) >>= fun () ->
-    Lwt_zmq.Socket.send s (string_of_bool res) >>= fun () ->
+    Zmq_lwt.Socket.send s (string_of_bool res) >>= fun () ->
     recv_loop ~verbose s p
 
 (* receive/send loop *)
 let main verbose port =
   Lwt_main.run begin
     let open Lwt in
-    let z = ZMQ.Context.create () in
-    let socket = ZMQ.Socket.create z ZMQ.Socket.rep in
-    ZMQ.Socket.bind socket ("tcp://127.0.0.1:" ^ (string_of_int port));
+    let z = Zmq.Context.create () in
+    let socket = Zmq.Socket.create z Zmq.Socket.rep in
+    Zmq.Socket.bind socket ("tcp://127.0.0.1:" ^ (string_of_int port));
     lwt_verbose ~verbose (Printf.sprintf "Listening on port: %d\n" port) >>= fun () ->
-    let lwt_socket = Lwt_zmq.Socket.of_socket socket in
+    let lwt_socket = Zmq_lwt.Socket.of_socket socket in
     recv_loop ~verbose lwt_socket port >>= fun () ->
-    ZMQ.Socket.close socket;
-    ZMQ.Context.terminate z |> return
+    Zmq.Socket.close socket;
+    Zmq.Context.terminate z |> return
   end
 
 (* cmdliner options *)
