@@ -24,19 +24,19 @@ clib = perfect_number_stubs
 all: build
 
 clean:
-	jbuilder clean
+	dune clean
 
 distclean: clean
 	rm -rf dist
 
 build:
-	jbuilder build
+	dune build
 
 run: build
 	_build/default/bin/$(main).exe
 
 test: build
-	ALCOTEST_QUICK_TESTS=1 jbuilder runtest
+	ALCOTEST_QUICK_TESTS=1 dune runtest
 
 # make distribution package (folder)
 dist: build

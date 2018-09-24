@@ -1,0 +1,11 @@
+
+(executable
+ (name test_runner)
+  (public_name test_runner)
+  (libraries tasks alcotest num))
+
+(alias
+ (name runtest)
+  (deps test_runner.exe)
+  (action (run %{deps})))
+

@@ -1,6 +1,6 @@
 (* vim: set ft=ocaml sw=2 ts=2: *)
 
-open Tasks.Mandelbrot
+(* open Tasks.Mandelbrot *)
 
 (* Testable types *)
 

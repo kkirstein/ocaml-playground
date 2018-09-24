@@ -11,7 +11,7 @@ open Cmdliner
 (* print_list
  * A helper function to print a list of int
 *)
-let print_int_list out_channel l =
+let print_int_list l =
   List.iter (Printf.printf "%d ") l
 let string_of_int_list l =
   String.concat " " (List.map string_of_int l)

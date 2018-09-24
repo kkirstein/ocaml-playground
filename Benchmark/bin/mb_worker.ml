@@ -5,11 +5,11 @@
  * comunication is done via zeroMQ messages
 *)
 
-open Tasks.Mandelbrot
+(* open Tasks.Mandelbrot *)
 open Cmdliner
 
 (* worker function *)
-let main verbose in_port out_port =
+let main _verbose _in_port _out_port =
   Lwt_main.run begin
     Lwt.return_unit
   end

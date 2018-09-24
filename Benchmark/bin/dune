@@ -1,0 +1,7 @@
+
+(executables
+ (names benchmark pn_worker mb_worker)
+  (public_names benchmark pn_worker mb_worker)
+  (libraries tasks cmdliner lwt)
+  (preprocess (pps lwt_ppx)))
+
