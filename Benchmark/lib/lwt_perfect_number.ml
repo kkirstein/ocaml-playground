@@ -7,13 +7,13 @@
 (* calculate perfect numbers by sending requests to a list
   * of workers. Communication is done by ZMQ *)
 let start_worker port =
-  (* let (>>=) = Lwt.(>>=) in *)
-  let cmd_line = match (Sys.unix, Sys.cygwin, Sys.win32) with
-    | (true, _, _)	-> "./pn_worker " ^ (string_of_int port) ^ " &"
-    | (_, true, _)	-> "./pn_worker " ^ (string_of_int port) ^ " &"
-    | (_, _, true)	-> "start /B pn_worker.exe " ^ (string_of_int port)
-    | (_, _, _)     -> failwith "Unsupport system, cannot start workers" in
-  (* Lwt_io.printl cmd_line >>= fun () -> *)
+  let exe_dir = Sys.executable_name |> Filename.dirname in
+  let worker_path = Filename.concat exe_dir "pn_worker" in
+  let cmd_line = match Sys.os_type with
+    | "Unix"	  -> String.concat " " [worker_path; (string_of_int port); "&"]
+    | "Cygwin"  -> String.concat " " [worker_path; (string_of_int port); "&"]
+    | "Win32"	  -> "start /B " ^ worker_path ^ ".exe " ^ (string_of_int port)
+    | _         -> failwith "Unsupport system, cannot start workers" in
   Lwt_unix.system cmd_line
 
 let stop_worker sockets =
