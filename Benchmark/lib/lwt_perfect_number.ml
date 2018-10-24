@@ -40,8 +40,9 @@ let perfect_numbers_zmq worker n =
   let lwt_sockets = List.map (fun s -> Zmq_lwt.Socket.of_socket s) sockets in
   let data = Listx.part (Listx.range 1 n) num_worker in
   Lwt_list.map_s (fun d -> query_worker lwt_sockets d) data >>= fun res ->
-  List.flatten res |> return >>= fun res ->
-  ignore(stop_worker lwt_sockets); return res >>= fun res ->
+  List.flatten res |> return >>= fun res -> begin
+    stop_worker lwt_sockets >>= fun () -> return res
+  end >>= fun res ->
   List.iter Zmq.Socket.close sockets;
   Zmq.Context.terminate z;
   return res
