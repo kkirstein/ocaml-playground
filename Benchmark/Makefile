@@ -38,6 +38,9 @@ run: build
 test: build
 	ALCOTEST_QUICK_TESTS=1 dune runtest
 
+test_all: build
+	dune runtest
+
 # make distribution package (folder)
 dist: build
 	rm -rf dist

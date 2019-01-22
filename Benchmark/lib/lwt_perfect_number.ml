@@ -38,7 +38,7 @@ let perfect_numbers_zmq worker n =
     (fun sock port -> Zmq.Socket.connect sock ("tcp://127.0.0.1:" ^ (string_of_int port)))
     sockets worker;
   let lwt_sockets = List.map (fun s -> Zmq_lwt.Socket.of_socket s) sockets in
-  let data = Listx.part (Listx.range 1 n) num_worker in
+  let data = Listx.part num_worker (Listx.range 1 (n + 1)) in
   Lwt_list.map_s (fun d -> query_worker lwt_sockets d) data >>= fun res ->
   List.flatten res |> return >>= fun res -> begin
     stop_worker lwt_sockets >>= fun () -> return res

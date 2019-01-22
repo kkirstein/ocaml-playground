@@ -14,5 +14,6 @@ depends: [
 	"lwt_ppx"
 	"num"
 	"zmq-lwt"
+	"listx"
 	"alcotest" {test}
 ]

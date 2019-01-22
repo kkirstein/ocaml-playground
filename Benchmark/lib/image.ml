@@ -41,9 +41,10 @@ let get_pixel img x y =
   if (x > (img.width - 1)) || (y > (img.height - 1)) then
     raise (Invalid_argument "Index out of bound")
   else
-    { r = Array1.get img.data (3 * x + 3 * y * img.width);
-      g = Array1.get img.data (3 * x + 3 * y * img.width + 1);
-      b = Array1.get img.data (3 * x + 3 * y * img.width + 2)}
+    let idx_1 = 3 * x + 3 * y * img.width in
+    { r = Array1.get img.data idx_1;
+      g = Array1.get img.data (idx_1 + 1);
+      b = Array1.get img.data (idx_1 + 2)}
 
 
 (* map function to all pixels *)
