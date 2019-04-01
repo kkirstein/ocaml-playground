@@ -8,7 +8,8 @@
 open Tasks.Perfect_number
 open Cmdliner
 
-let default_port = 5555
+let default_in_port = 5555
+let default_out_port = 5556
 (* let usage = "Usage: pn_worker [port]" *)
 
 (* a simple console logger with controlled verbosity *)
@@ -16,28 +17,33 @@ let lwt_verbose ?(verbose=true) msg =
   if verbose then Lwt_io.printl msg else Lwt.return_unit
 
 (* receiver loop *)
-let rec recv_loop ~verbose s p =
+let rec recv_loop ~verbose recv send =
   let open Lwt in
-  Zmq_lwt.Socket.recv s >>= fun req ->
+  Zmq_lwt.Socket.recv recv >>= fun req ->
   match req with
-  | "end" ->  lwt_verbose ~verbose (Printf.sprintf "%d: Stopping\n" p)
+  | "end" ->  lwt_verbose ~verbose "Stopping\n"
   | n     ->  let res = (int_of_string n) |> is_perfect in
-    (if res then lwt_verbose ~verbose (Printf.sprintf "%d: %s" p n)
+    (if res then lwt_verbose ~verbose (Printf.sprintf "received: %s" n)
      else return_unit) >>= fun () ->
-    Zmq_lwt.Socket.send s (string_of_bool res) >>= fun () ->
-    recv_loop ~verbose s p
+    Zmq_lwt.Socket.send send (string_of_bool res) >>= fun () ->
+    recv_loop ~verbose recv send
 
 (* receive/send loop *)
-let main verbose port =
+let main verbose in_port out_port =
   Lwt_main.run begin
     let open Lwt in
     let z = Zmq.Context.create () in
-    let socket = Zmq.Socket.create z Zmq.Socket.rep in
-    Zmq.Socket.bind socket ("tcp://127.0.0.1:" ^ (string_of_int port));
-    lwt_verbose ~verbose (Printf.sprintf "Listening on port: %d\n" port) >>= fun () ->
-    let lwt_socket = Zmq_lwt.Socket.of_socket socket in
-    recv_loop ~verbose lwt_socket port >>= fun () ->
-    Zmq.Socket.close socket;
+    let in_socket = Zmq.Socket.create z Zmq.Socket.pull
+    and out_socket = Zmq.Socket.create z Zmq.Socket.push in
+    Zmq.Socket.connect in_socket ("tcp://127.0.0.1:" ^ (string_of_int in_port));
+    Zmq.Socket.connect out_socket ("tcp://127.0.0.1:" ^ (string_of_int out_port));
+    lwt_verbose ~verbose (Printf.sprintf "Listening on port: %d\n" in_port) >>= fun () ->
+    lwt_verbose ~verbose (Printf.sprintf "Sending to port: %d\n" out_port) >>= fun () ->
+    let recv = Zmq_lwt.Socket.of_socket in_socket
+    and send = Zmq_lwt.Socket.of_socket out_socket in
+    recv_loop ~verbose recv send >>= fun () ->
+    Zmq.Socket.close in_socket;
+    Zmq.Socket.close out_socket;
     Zmq.Context.terminate z |> return
   end
 
@@ -46,10 +52,13 @@ let verbose =
   let doc = "Print status information to STDOUT" in
   Arg.(value & flag & info ["verbose"] ~docv:"VERBOSE" ~doc)
 
-let port =
-  let doc = "Port on which worker is listening for input. Default: " ^
-            (string_of_int default_port) in
-  Arg.(value & pos ~rev:true 0 int default_port & info [] ~docv:"PORT" ~doc)
+let in_port =
+  let doc = "Port on which worker is receiving input data." in
+  Arg.(value & opt int default_in_port & info ["i"; "in-port"] ~docv:"IN_PORT" ~doc)
+
+let out_port =
+  let doc = "Port on which worker is sending its data." in
+  Arg.(value & opt int default_in_port & info ["o"; "out-port"] ~docv:"OUT_PORT" ~doc)
 
 let cmd =
   let doc = "Starts a worker process to calculate perfect numbers" in
@@ -62,8 +71,8 @@ let cmd =
     `P "If $(b,VERBOSE) is given, status information of the worker is
         printed to STDOUT."]
   in
-  Term.(const main $ verbose $ port),
-  Term.info "pn_worker" ~version:"0.1.0" ~doc ~man
+  Term.(const main $ verbose $ in_port $ out_port),
+  Term.info "pn_worker" ~version:"0.2.0" ~doc ~man
 
 (* main entry point *)
 let () =
