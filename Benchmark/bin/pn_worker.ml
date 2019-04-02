@@ -22,10 +22,11 @@ let rec recv_loop ~verbose recv send =
   Zmq_lwt.Socket.recv recv >>= fun req ->
   match req with
   | "end" ->  lwt_verbose ~verbose "Stopping\n"
-  | n     ->  let res = (int_of_string n) |> is_perfect in
-    (if res then lwt_verbose ~verbose (Printf.sprintf "received: %s" n)
-     else return_unit) >>= fun () ->
-    Zmq_lwt.Socket.send send (string_of_bool res) >>= fun () ->
+  | n     ->  let res = if is_perfect (int_of_string n) 
+                then "t:" ^ n
+                else "f:" ^ n in
+    lwt_verbose ~verbose ("Sending: " ^ res) >>= fun () ->
+    Zmq_lwt.Socket.send send res >>= fun () ->
     recv_loop ~verbose recv send
 
 (* receive/send loop *)
@@ -54,11 +55,11 @@ let verbose =
 
 let in_port =
   let doc = "Port on which worker is receiving input data." in
-  Arg.(value & opt int default_in_port & info ["i"; "in-port"] ~docv:"IN_PORT" ~doc)
+  Arg.(required & pos 0 (some int) None & info [] ~docv:"IN_PORT" ~doc)
 
 let out_port =
   let doc = "Port on which worker is sending its data." in
-  Arg.(value & opt int default_in_port & info ["o"; "out-port"] ~docv:"OUT_PORT" ~doc)
+  Arg.(required & pos 1 (some int) None & info [] ~docv:"OUT_PORT" ~doc)
 
 let cmd =
   let doc = "Starts a worker process to calculate perfect numbers" in

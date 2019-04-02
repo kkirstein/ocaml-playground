@@ -62,8 +62,8 @@ let bench enable_pn_worker = Lwt_main.run begin
 
     let%lwt () = match enable_pn_worker with
       | Some num_worker ->
-        Lwt_list.map_s Tasks.Lwt_perfect_number.start_worker (worker_ports num_worker) >>= fun _ ->
-        lwt_time_it ~tfun:Unix.gettimeofday (Tasks.Lwt_perfect_number.perfect_numbers_zmq (worker_ports num_worker)) pn_limit >>= fun res ->
+        lwt_time_it ~tfun:Unix.gettimeofday
+          (Tasks.Lwt_perfect_number.perfect_numbers_zmq num_worker) 30 >>= fun res ->
         bind res.result (fun r -> Lwt_io.printf "perfect_numbers_zmq(%d) = %s (Elapsed time %.3fs)\n"
                             pn_limit (string_of_int_list r) res.elapsed)
       | None            -> return_unit
