@@ -33,7 +33,7 @@ let start_worker send_port recv_port num_worker =
       let cmd_line = match Sys.os_type with
         | "Unix"	  -> String.concat " " [worker_path;
                                          (string_of_int send_port);
-                                         (string_of_int recv_port); "--verbose"; "&"]
+                                         (string_of_int recv_port); "&"]
         | "Cygwin"  -> String.concat " " [worker_path;
                                           (string_of_int send_port);
                                           (string_of_int recv_port); "&"]
@@ -49,7 +49,7 @@ let start_worker send_port recv_port num_worker =
 let stop_worker lwt_sock num_worker =
   let rec loop num = match num with
     | 0 -> Lwt.return_unit
-    | n -> Zmq_lwt.Socket.send lwt_sock "end" >>= fun () -> loop (n-1)
+    | n -> Zmq_lwt.Socket.send lwt_sock "end" >>= fun () -> loop (n - 1)
   in
   loop num_worker
 
@@ -63,17 +63,18 @@ let send_data sock nmax =
 
 let recv_data sock nmax =
   let rec loop n acc =
-    if n = 0 then lwt_verbose ~verbose:true
-        (Printf.sprintf "Result: %s" (string_of_int_list acc)) >>= fun () ->
+    if n > nmax then (* lwt_verbose ~verbose
+        (Printf.sprintf "Result: %s" (string_of_int_list acc)) >>= fun () -> *)
       Lwt.return acc
     else Zmq_lwt.Socket.recv sock >>= fun ans ->
-      print_endline ("Receiving: " ^ ans);
+      (* lwt_verbose ~verbose ("Receiving: " ^ ans ^ "(" ^ (string_of_int n) ^ ")");
+      Lwt.return ans >>= fun ans -> *)
       match String.split_on_char ':' ans with
-      | "t" :: x :: [] -> let n = int_of_string x in loop (n - 1) (n :: acc)
-      | "f" :: x :: [] -> let n = int_of_string x in loop (n - 1) acc
+      | "t" :: x :: [] -> let n = int_of_string x in loop (n + 1) (n :: acc)
+      | "f" :: x :: [] -> let n = int_of_string x in loop (n + 1) acc
       | _         -> failwith "Invalid answer"
   in
-  loop nmax []
+  loop 1 []
 
 (* let query_worker sockets nums =
    (* send requests *)
