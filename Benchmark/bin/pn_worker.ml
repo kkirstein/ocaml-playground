@@ -65,7 +65,7 @@ let cmd =
   let doc = "Starts a worker process to calculate perfect numbers" in
   let man = [
     `S "DESCRIPTION";
-    `P "$(tname) checks wheter a given number is perfect.contents
+    `P "$(tname) checks whether a given number is perfect.
         This means that all its factors sum up to itself. Communication
         with the worker is done via ZMQ, enabling a asynchronous and parallel
         execution.";
