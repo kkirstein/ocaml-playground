@@ -63,27 +63,14 @@ let send_data sock nmax =
 
 let recv_data sock nmax =
   let rec loop n acc =
-    if n > nmax then (* lwt_verbose ~verbose
-        (Printf.sprintf "Result: %s" (string_of_int_list acc)) >>= fun () -> *)
-      Lwt.return acc
+    if n > nmax then      Lwt.return acc
     else Zmq_lwt.Socket.recv sock >>= fun ans ->
-      (* lwt_verbose ~verbose ("Receiving: " ^ ans ^ "(" ^ (string_of_int n) ^ ")");
-      Lwt.return ans >>= fun ans -> *)
       match String.split_on_char ':' ans with
       | "t" :: x :: [] -> let n = int_of_string x in loop (n + 1) (n :: acc)
       | "f" :: x :: [] -> let n = int_of_string x in loop (n + 1) acc
       | _         -> failwith "Invalid answer"
   in
   loop 1 []
-
-(* let query_worker sockets nums =
-   (* send requests *)
-   Lwt_list.iter_s (fun (s, n) -> Zmq_lwt.Socket.send s (string_of_int n))
-    (List.combine sockets nums) >>= fun () ->
-  Lwt_list.map_s (fun s -> Zmq_lwt.Socket.recv s) sockets >>= fun res ->
-  List.combine res nums |>
-  List.filter (fun (r, _) -> r = "true") |>
-  List.split |> snd |> Lwt.return *)
 
 let perfect_numbers_zmq num_worker n =
   let z = Zmq.Context.create () in
