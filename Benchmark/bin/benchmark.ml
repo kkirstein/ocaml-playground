@@ -22,6 +22,7 @@ let lwt_newline () =
 
 (* some config params *)
 let pn_limit = 10000
+let prime_limit = 100000
 let num_worker = 4
 let rec worker_ports ?(base=5550) num =
   match num with
@@ -47,6 +48,16 @@ let bench enable_pn_worker = Lwt_main.run begin
       (Big_int.string_of_big_int res_fib_2.result) res_fib_2.elapsed >>= fun () ->
     Lwt_io.printl "" >>= fun () ->
     Lwt_io.flush Lwt_io.stdout >>= fun () ->
+
+    let%lwt () = Lwt_io.printl "Prime numbers"
+    and () = Lwt_io.printl     "=============" in
+    let%lwt res_primes = lwt_time_it Tasks.Primes.find_primes prime_limit
+    in
+    Lwt_io.printf "find_primes(%d): %d primes (Elapsed time %.3fs)\n"
+      prime_limit (List.length res_primes.result) res_primes.elapsed >>= fun () ->
+    Lwt_io.printl "" >>= fun () ->
+    Lwt_io.flush Lwt_io.stdout >>= fun () ->
+
 
     let%lwt () = Lwt_io.printl "Perfect numbers"
     and () = Lwt_io.printl "===============" in
