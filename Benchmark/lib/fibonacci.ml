@@ -12,7 +12,7 @@ let rec fib_naive n =
 (* optimized recursive implementation *)
 let fib n =
   let rec fib_aux n a b =
-    if n = 0 then a else fib_aux (n-1) b (Big_int.add_big_int a b)
+    if n = 0 then a else fib_aux (n-1) b (Z.add a b)
   in
-  fib_aux n Big_int.zero_big_int Big_int.unit_big_int
+  fib_aux n Z.zero Z.one
 

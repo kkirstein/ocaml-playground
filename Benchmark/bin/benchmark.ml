@@ -43,9 +43,9 @@ let bench enable_pn_worker = Lwt_main.run begin
     Lwt_io.printf "fib_naive(35) = %d (Elapsed time %.3fs)\n"
       res_fib_naive.result res_fib_naive.elapsed >>= fun () ->
     Lwt_io.printf "fib(35) = %s (Elapsed time %.3fs)\n"
-      (Big_int.string_of_big_int res_fib.result) res_fib.elapsed >>= fun () ->
+      (Z.to_string res_fib.result) res_fib.elapsed >>= fun () ->
     Lwt_io.printf "fib(1000) = %s (Elapsed time %.3fs)\n"
-      (Big_int.string_of_big_int res_fib_2.result) res_fib_2.elapsed >>= fun () ->
+      (Z.to_string res_fib_2.result) res_fib_2.elapsed >>= fun () ->
     Lwt_io.printl "" >>= fun () ->
     Lwt_io.flush Lwt_io.stdout >>= fun () ->
 

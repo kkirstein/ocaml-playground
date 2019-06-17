@@ -8,6 +8,6 @@ val fib_naive : int -> int
     the Fibonacci number for [n] *)
 
 
-val fib : int -> Big_int.big_int
+val fib : int -> Z.t
 (** [fib_naive n] optimized recursive implementation, which calculates
     the Fibonacci number for [n] *)
