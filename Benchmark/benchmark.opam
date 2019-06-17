@@ -13,6 +13,7 @@ depends: [
 	"lwt"
 	"lwt_ppx"
 	"num"
+	"zarith"
 	"zmq-lwt"
 	"listx"
 	"alcotest" {test}

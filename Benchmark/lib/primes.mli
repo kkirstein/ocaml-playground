@@ -10,9 +10,16 @@ val sieve : int -> int list
 
 
 val is_prime : int -> bool
-(** [is_prime n] checks whetehr [n] is a prime number by a brute force approach *)
+(** [is_prime n] checks whether [n] is a prime number by a brute force approach *)
 
+
+val is_prime_z : Z.t -> bool
+(** [is_prime n] checks whether [n] is a prime number by a brute force approach *)
 
 
 val find_primes : int -> int list
+(** [find_primes limit] finds all prime numbers less than [limit] *)
+
+
+val find_primes_z : Z.t -> Z.t list
 (** [find_primes limit] finds all prime numbers less than [limit] *)

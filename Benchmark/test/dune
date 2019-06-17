@@ -2,7 +2,7 @@
 (executable
  (name test_runner)
   (public_name test_runner)
-  (libraries tasks alcotest num))
+  (libraries tasks alcotest num zarith))
 
 (alias
  (name runtest)
