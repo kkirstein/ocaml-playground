@@ -23,25 +23,37 @@ let test_is_prime_z () =
   Alcotest.(check bool) "is_prime 6" false (is_prime_z (Z.of_int 6))
 (* ---------------------- *)
 let test_find_primes () =
-  Alcotest.(check (list int)) " find_primes 19" [2; 3; 5; 7; 11; 13; 17] (find_primes 19);
-  Alcotest.(check (list int)) " find_primes 20" [2; 3; 5; 7; 11; 13; 17; 19] (find_primes 20);
-  Alcotest.(check int) " find_primes 10000" 1229 (List.length (find_primes 10000))
+  Alcotest.(check (list int)) "find_primes 19" [2; 3; 5; 7; 11; 13; 17] (find_primes 19);
+  Alcotest.(check (list int)) "find_primes 20" [2; 3; 5; 7; 11; 13; 17; 19] (find_primes 20);
+  Alcotest.(check int) "find_primes 10000" 1229 (List.length (find_primes 10000))
 (* ---------------------- *)
 let test_find_primes_z () =
-  Alcotest.(check (list z_type)) " find_primes_z 19"
+  Alcotest.(check (list z_type)) "find_primes_z 19"
     (List.map Z.of_int [2; 3; 5; 7; 11; 13; 17])
     (find_primes_z (Z.of_int 19));
-  Alcotest.(check (list z_type)) " find_primes_z 20"
+  Alcotest.(check (list z_type)) "find_primes_z 20"
     (List.map Z.of_int [2; 3; 5; 7; 11; 13; 17; 19])
     (find_primes_z (Z.of_int 20));
-  Alcotest.(check int) " find_primes_z 10000"
+  Alcotest.(check int) "find_primes_z 10000"
     1229
     (List.length (find_primes_z (Z.of_int 10000)))
+(* ---------------------- *)
+let test_sieve () =
+  Alcotest.(check (list int)) "sieve 19"
+    [2; 3; 5; 7; 11; 13; 17]
+    (sieve 19);
+  Alcotest.(check (list int)) "sieve 20"
+    [2; 3; 5; 7; 11; 13; 17; 19]
+    (sieve 20);
+  Alcotest.(check int) "sieve 10000"
+    1229
+    (List.length (sieve 10000))
 
 (* Test set *)
 let test_set = [
   "is_prime", `Quick, test_is_prime;
   "is_prime_z", `Quick, test_is_prime_z;
   "find_primes", `Quick, test_find_primes;
-  "find_primes_z", `Quick, test_find_primes_z
+  "find_primes_z", `Quick, test_find_primes_z;
+  "sieve", `Quick, test_sieve
 ]

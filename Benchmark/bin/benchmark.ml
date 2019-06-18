@@ -58,7 +58,11 @@ let bench enable_pn_worker = Lwt_main.run begin
     let%lwt res_primes_z = lwt_time_it Tasks.Primes.find_primes_z (Z.of_int prime_limit)
     in
     Lwt_io.printf "find_primes_z(%d): %d primes (Elapsed time %.3fs)\n"
-      prime_limit (List.length res_primes_z.result) res_primes.elapsed >>= fun () ->
+      prime_limit (List.length res_primes_z.result) res_primes_z.elapsed >>= fun () ->
+    let%lwt res_sieve = lwt_time_it Tasks.Primes.sieve prime_limit
+    in
+    Lwt_io.printf "sieve(%d): %d primes (Elapsed time %.3fs)\n"
+      prime_limit (List.length res_sieve.result) res_sieve.elapsed >>= fun () ->
     Lwt_io.printl "" >>= fun () ->
     Lwt_io.flush Lwt_io.stdout >>= fun () ->
 

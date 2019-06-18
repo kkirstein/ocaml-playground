@@ -6,7 +6,7 @@
 
 val sieve : int -> int list
 (** [sieve limit] finds all prime numbers less-or-equal to [limit]
-    by applying the 'Sieve of Erathostenes' algorithm *)
+    by applying the 'Sieve of Eratosthenes' algorithm *)
 
 
 val is_prime : int -> bool
