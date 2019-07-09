@@ -11,7 +11,7 @@ else
 endif
 
 # targets for distribution
-dist_sources = bin/benchmark.exe bin/pn_worker.exe bin/mb_worker.exe
+dist_sources = bin/benchmark.exe bin/pn_worker.exe bin/mb_worker.exe bin/check_prime.exe
 dist_target = $(foreach f,$(dist_sources),./dist/$(basename $(notdir $(f)$(EXT_EXE))))
 main_lwt = lwt_benchmark
 main = benchmark

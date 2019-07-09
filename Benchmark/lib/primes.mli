@@ -3,6 +3,9 @@
 (** primes.mli
     A module to calculate prime numbers *)
 
+val test_number : Z.t
+(** A special test number for benchmarking *)
+
 
 val sieve : int -> int list
 (** [sieve limit] finds all prime numbers less-or-equal to [limit]
