@@ -4,10 +4,16 @@
     A module to calculate prime numbers *)
 
 val test_number : Z.t
+val test_number2 : Z.t
 (** A special test number for benchmarking *)
 
 
 val sieve : int -> int list
+(** [sieve limit] finds all prime numbers less-or-equal to [limit]
+    by applying the 'Sieve of Eratosthenes' algorithm *)
+
+
+val sieve_z : Z.t -> Z.t list
 (** [sieve limit] finds all prime numbers less-or-equal to [limit]
     by applying the 'Sieve of Eratosthenes' algorithm *)
 

@@ -48,6 +48,17 @@ let test_sieve () =
   Alcotest.(check int) "sieve 10000"
     1229
     (List.length (sieve 10000))
+(* ---------------------- *)
+let test_sieve_z () =
+  Alcotest.(check (list z_type)) "sieve 19"
+    (List.map Z.of_int [2; 3; 5; 7; 11; 13; 17])
+    (sieve_z (Z.of_int 19));
+  Alcotest.(check (list z_type)) "sieve 20"
+     (List.map Z.of_int[2; 3; 5; 7; 11; 13; 17; 19])
+    (sieve_z (Z.of_int 20));
+  Alcotest.(check int) "sieve 10000"
+    1229
+    (List.length (sieve_z (Z.of_int 10000)))
 
 (* Test set *)
 let test_set = [
@@ -55,5 +66,6 @@ let test_set = [
   "is_prime_z", `Quick, test_is_prime_z;
   "find_primes", `Quick, test_find_primes;
   "find_primes_z", `Quick, test_find_primes_z;
-  "sieve", `Quick, test_sieve
+  "sieve", `Quick, test_sieve;
+  "sieve_z", `Quick, test_sieve_z
 ]
