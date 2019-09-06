@@ -10,3 +10,6 @@ dist
 
 # node.js
 node_modules
+_esy
+esy.lock
+
