@@ -9,6 +9,9 @@
 	},
 	"esy": {
 		"build": "dune build -p #{self.name}",
+		"buildEnv": {
+			"CC": "x86_64-w64_mingw32-gcc"
+		},
 		"release": {
 			"bin": "benchmark",
 			"includePackages": []
