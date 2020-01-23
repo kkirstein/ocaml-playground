@@ -1,4 +1,3 @@
-
 (executables
  (names benchmark pn_worker mb_worker check_prime)
   (public_names benchmark pn_worker mb_worker check_prime)

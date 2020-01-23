@@ -30,7 +30,7 @@ distclean: clean
 	rm -rf dist
 
 build:
-	dune build
+	dune build @all
 
 run: build
 	_build/default/bin/$(main).exe
