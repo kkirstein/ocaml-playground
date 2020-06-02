@@ -4,6 +4,8 @@ theory HelloProof
 
 	goal G2: (true -> false) /\ (true \/ false)
 
+  use int.Int
+  
 	goal G3: forall x : int. x * x >= 0
 
 end
