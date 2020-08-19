@@ -5,6 +5,7 @@
  * programming language
 *)
 
+open Domainslib
 
 (* print_list
  * A helper function to print a list of int
@@ -24,14 +25,17 @@ let time_it f arg =
   let toc = Sys.time () in
   {result; elapsed = toc -. tic}
 
+
 (* some config params *)
 let pn_limit = 10000
 let prime_limit = 100000
-let num_worker = 4
+let num_worker = 3
 
 
 (* main entry point *)
 let bench () = 
+  let pool = Task.setup_pool ~num_domains:num_worker in
+
   print_endline "Fibonacci numbers";
   print_endline "=================";
 
@@ -74,6 +78,10 @@ let bench () =
   in
   Printf.printf "perfect_numbers(%d) = %s (Elapsed time %.3fs)\n"
     pn_limit (string_of_int_list res_pn_1.result) res_pn_1.elapsed;
+  let res_pn_2 = time_it (Tasks.Perfect_number.perfect_numbers_par pool) pn_limit
+  in
+  Printf.printf "perfect_numbers_par(%d) = %s (Elapsed time %.3fs)\n"
+    pn_limit (string_of_int_list res_pn_2.result) res_pn_2.elapsed;
   print_newline ();
 
   print_endline "Mandelbrot set";
@@ -83,7 +91,8 @@ let bench () =
   let res_mandel_2 = time_it (fun _ -> Tasks.Mandelbrot.mandelbrot 1920 1200 (-0.5) 0.0 (4.0/.1200.)) () in
   Printf.printf "mandelbrot(1920x1200) (Elapsed time %.3fs)\n" res_mandel_2.elapsed;
   Tasks.Image.write_ppm res_mandel_2.result "mandelbrot_1920_1200.ppm";
-  print_newline ()
+  print_newline ();
+  Task.teardown_pool pool
 
 
 (* start main *)

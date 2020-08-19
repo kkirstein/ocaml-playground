@@ -1,3 +1,7 @@
 // Platzieren Sie Ihre Einstellungen in dieser Datei, um Standard- und Benutzereinstellungen zu überschreiben.
 {
+    "ocaml.sandbox": {
+        "switch": "4.10.0+multicore",
+        "kind": "opam"
+    }
 }
