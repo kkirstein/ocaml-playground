@@ -33,21 +33,20 @@ let perfect_numbers_par pool n =
   Task.parallel_for pool ~chunk_size:(n/nd) ~start:1 ~finish:n ~body:(fun i ->
       if is_perfect i then result.(i) <- Some i else ());
   result |> Array.to_list |> List.filter_map (fun x -> x)
-(* let perfect_numbers_par pool n =
+
+let perfect_numbers_par2 pool n =
   let open Domainslib in
-  let rec loop i =
-    if i = n then Task.async pool (fun _ -> []) else
-    if is_perfect i then Task.async pool (fun _ -> i :: loop (i+1))
-    else Task.async pool (fun _ -> loop (i+1))
-  in
-  Task.await pool (loop 1) *)
+  Listx.range 2 n |>
+  List.map (fun x -> Task.async pool (fun _ -> if is_perfect x then Some x else None)) |>
+  List.map (fun x -> Task.await pool x) |>
+  List.filter_map (fun x -> x)
 
 (* generate a list of perfect numbers until given upper limit,
  * use C version of predicate *)
 (* let perfect_numbers_c n =
-  let rec loop i =
+   let rec loop i =
     if i = n then [] else
     if is_perfect_c i then i :: loop (i+1) else loop (i+1)
-  in
-  loop 1 *)
+   in
+   loop 1 *)
 
