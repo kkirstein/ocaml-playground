@@ -1,0 +1,4 @@
+(executable
+ (public_name owl_playground)
+ (name main))
+ ;(libraries owl_playground))

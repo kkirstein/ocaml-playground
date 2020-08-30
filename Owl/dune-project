@@ -1,0 +1,15 @@
+(lang dune 2.7)
+
+(name owl_playground)
+(version 0.1.0)
+
+(generate_opam_files true)
+
+(authors "kay-Uwe Kirstein <kay-uwe@kirsteinhome.ch>")
+(maintainers "Kay-Uwe Kirstein <kay-uwe@kirsteinhome.ch>")
+
+(package
+ (name owl_playground)
+ (synopsis "A playground for scientific computing in OCaml ith owl")
+ (description "A playground for scientific computing in OCaml ith owl")
+ (depends ))
