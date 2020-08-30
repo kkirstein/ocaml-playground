@@ -1,6 +1,6 @@
 
 (library
  (name tasks)
-  (libraries zarith listx lwt zmq-lwt)
+  (libraries zarith listx stb_image_write lwt zmq-lwt)
   (c_names perfect_number_stubs))
 

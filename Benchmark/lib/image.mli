@@ -35,3 +35,6 @@ val map : (int -> int -> pixel_color) -> image -> image
 (** Write given image data to bitmap file *)
 val write_ppm : image -> string -> unit
 
+(** Write given image data to PNG file *)
+val write_png : image -> string -> unit
+

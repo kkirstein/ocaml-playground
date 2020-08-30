@@ -12,6 +12,7 @@ build: [
 depends: [
 	"dune" {build}
 	"cmdliner"
+	"stb_image_write"
 	"lwt"
 	"lwt_ppx"
 	"zarith"

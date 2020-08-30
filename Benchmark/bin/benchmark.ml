@@ -102,7 +102,7 @@ let bench enable_pn_worker = Lwt_main.run begin
     Lwt_io.printf "mandelbrot(640x480) (Elapsed time %.3fs)\n" res.elapsed >>= fun () ->
     lwt_time_it (fun _ -> Tasks.Mandelbrot.mandelbrot 1920 1200 (-0.5) 0.0 (4.0/.1200.)) () >>= fun res ->
     Lwt_io.printf "mandelbrot(1920x1200) (Elapsed time %.3fs)\n" res.elapsed >>= fun () ->
-    return (Tasks.Image.write_ppm res.result "mandelbrot_1920_1200.ppm")
+    return (Tasks.Image.write_png res.result "mandelbrot_1920_1200.png")
   end
 
 
