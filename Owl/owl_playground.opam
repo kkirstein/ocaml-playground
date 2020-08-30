@@ -7,6 +7,7 @@ maintainer: ["Kay-Uwe Kirstein <kay-uwe@kirsteinhome.ch>"]
 authors: ["kay-Uwe Kirstein <kay-uwe@kirsteinhome.ch>"]
 depends: [
   "dune" {>= "2.7"}
+  "stb_image" {>= "0.5"}
   "odoc" {with-doc}
 ]
 build: [

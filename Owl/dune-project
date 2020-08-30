@@ -12,4 +12,6 @@
  (name owl_playground)
  (synopsis "A playground for scientific computing in OCaml ith owl")
  (description "A playground for scientific computing in OCaml ith owl")
- (depends ))
+ (depends
+  (stb_image (>= 0.5))
+  (owl (>= 0.9))))
