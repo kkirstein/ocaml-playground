@@ -8,6 +8,8 @@ authors: ["kay-Uwe Kirstein <kay-uwe@kirsteinhome.ch>"]
 depends: [
   "dune" {>= "2.7"}
   "stb_image" {>= "0.5"}
+  "stb_image_write" {>= "0.2"}
+  "owl" {>= "0.9"}
   "odoc" {with-doc}
 ]
 build: [

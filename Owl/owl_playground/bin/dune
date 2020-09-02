@@ -1,4 +1,4 @@
 (executable
  (public_name owl_playground)
  (name main)
- (libraries stb_image stb_image_write owl))
+ (libraries owl_playground stb_image stb_image_write owl))
