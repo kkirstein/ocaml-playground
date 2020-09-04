@@ -29,21 +29,21 @@ val ndarray_to_image :
     an integer image buffer. Returns [`Invalid_dimension n] error, if
     the dimensions don't match a 1 or 3 color channel image *)
 
-val write :
+val save :
   ?fmt:[ `PNG ] ->
   string ->
   Owl.Dense.Ndarray.S.arr ->
   (unit, [ `Invalid_dimension of int ]) result
-(** [write ?fmt file_path img] writes given image data [img] to
+(** [save ?fmt file_path img] writes given image data [img] to
     a file of format [fmt]. Returns [`Invalid_dimension n] error, if
     invaid dimensions are given. *)
 
-val read :
+val load :
   string ->
   ( Owl.Dense.Ndarray.S.arr,
     [ `IO_error of string | `Invalid_dimension of int ] )
   result
-(** [read file_path] reads the given image file [file_path] to
+(** [load file_path] reads the given image file [file_path] to
     a Ndarray. Returns [`IO_error str] error, if the image file
     could not read. *)
 

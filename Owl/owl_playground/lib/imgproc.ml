@@ -49,7 +49,7 @@ let to_grayscale img =
   | x -> Error (`Invalid_dimension x)
 
 (* file IO *)
-let write ?(fmt = `PNG) file_path img =
+let save ?(fmt = `PNG) file_path img =
   let open Owl.Dense.Ndarray in
   let exporter = match fmt with `PNG -> Stb_image_write.png in
   match S.num_dims img with
@@ -65,7 +65,7 @@ let write ?(fmt = `PNG) file_path img =
       Result.bind img_buf (fun buf -> Ok (exporter file_path ~w ~h ~c buf))
   | x -> Error (`Invalid_dimension x)
 
-let read file_path =
+let load file_path =
   match Stb_image.loadf file_path with
   | Ok img_buf -> image_to_ndarray img_buf
   | Error (`Msg err) -> Error (`IO_error err)
