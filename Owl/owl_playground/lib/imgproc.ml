@@ -39,12 +39,13 @@ let ndarray_to_image nd =
 (* color conversion *)
 let to_grayscale img =
   let open Owl.Dense.Ndarray in
-  match Generic.num_dims img with
+  let dims = Generic.shape img in
+  match Array.length dims with
   | 2 -> Ok img
   | 3 ->
       let chans = Generic.split ~axis:2 [| 1; 1; 1 |] img in
       let r, g, b = (chans.(0), chans.(1), chans.(2)) in
-      Ok Generic.((r *$ 0.2125) + (g *$ 0.7154) + (b *$ 0.0721))
+      Ok Generic.(reshape ((r *$ 0.2125) + (g *$ 0.7154) + (b *$ 0.0721)) [|dims.(0); dims.(1)|])
   | x -> Error (`Invalid_dimension x)
 
 (* file IO *)
