@@ -64,4 +64,7 @@ let write ?(fmt = `PNG) file_path img =
       Result.bind img_buf (fun buf -> Ok (exporter file_path ~w ~h ~c buf))
   | x -> Error (`Invalid_dimension x)
 
-let read _file_path = failwith "not implemented"
+let read file_path =
+  match Stb_image.loadf file_path with
+  | Ok img_buf -> image_to_ndarray img_buf
+  | Error (`Msg err) -> Error (`IO_error err)

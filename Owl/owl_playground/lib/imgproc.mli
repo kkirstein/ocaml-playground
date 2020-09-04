@@ -38,7 +38,11 @@ val write :
     a file of format [fmt]. Returns [`Invalid_dimension n] error, if
     invaid dimensions are given. *)
 
-val read : string -> (Owl.Dense.Ndarray.S.arr, [ `IO_error of string ]) result
+val read :
+  string ->
+  ( Owl.Dense.Ndarray.S.arr,
+    [ `IO_error of string | `Invalid_dimension of int ] )
+  result
 (** [read file_path] reads the given image file [file_path] to
     a Ndarray. Returns [`IO_error str] error, if the image file
     could not read. *)
