@@ -6,9 +6,10 @@
 let print_img_info img =
   let open Owl.Dense.Ndarray.Generic in
   let dims = shape img in
+  Printf.printf "shape: [| %s |]; " (String.concat "; " (List.map string_of_int (Array.to_list dims)));
   match Array.length dims with
-  | 3 -> Ok (Printf.printf "w:%d h:%d c:%d\n" dims.(0) dims.(1) dims.(2))
-  | 2 -> Ok (Printf.printf "w:%d h:%d\n" dims.(0) dims.(1))
+  | 3 -> Ok (Printf.printf "w: %d; h: %d; c:%d\n" dims.(1) dims.(0) dims.(2))
+  | 2 -> Ok (Printf.printf "w: %d; h: %d\n" dims.(1) dims.(0))
   | x -> Error (`Invalid_dimension x)
 
 let error_msg = function
@@ -22,8 +23,8 @@ let image_to_ndarray img =
   let h = Stb_image.height img in
   let img_data = Bigarray.genarray_of_array1 img.data in
   match Stb_image.channels img with
-  | 1 -> Ok (S.reshape img_data [| w; h |])
-  | 3 -> Ok (S.reshape img_data [| w; h; 3 |])
+  | 1 -> Ok (S.reshape img_data [| h; w |])
+  | 3 -> Ok (S.reshape img_data [| h; w; 3 |])
   | x -> Error (`Invalid_dimension x)
 
 let ndarray_to_image nd =

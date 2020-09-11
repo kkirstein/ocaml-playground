@@ -2,6 +2,7 @@
   Do some basic image processing with owl *)
 
 open Owl_playground.Imgproc
+open Owl_plplot
 
 (* a test image *)
 let image_folder = "./test_data"
@@ -24,4 +25,8 @@ let () =
     | Ok () -> ()
     | Error err -> failwith (error_msg err)
   in
-  Printf.printf " done.\n"
+  Printf.printf " done.\n";
+  Printf.printf "Plotting gray image ..";
+  let h = Plot.create (Filename.concat image_folder "plot_01.png") in
+  Plot.image ~h (Owl.Dense.Ndarray.Generic.cast_s2d gray);
+  Plot.output h
