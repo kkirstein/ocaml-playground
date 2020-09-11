@@ -30,7 +30,7 @@ let image_to_ndarray img =
 let ndarray_to_image nd =
   let open Owl.Dense.Ndarray in
   match S.num_dims nd with
-  | 1 | 3 ->
+  | 2 | 3 ->
       let len = S.shape nd |> Array.fold_left ( * ) 1 in
       let buf = Bigarray.(Array1.create int8_unsigned c_layout len) in
       S.iteri (fun i x -> buf.{i} <- int_of_float (x *. 255.0)) nd;
