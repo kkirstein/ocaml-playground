@@ -10,6 +10,7 @@ depends: [
   "stb_image" {>= "0.5"}
   "stb_image_write" {>= "0.2"}
   "owl" {>= "0.9"}
+  "owl-plplot" {>= "0.9"}
   "odoc" {with-doc}
 ]
 build: [
