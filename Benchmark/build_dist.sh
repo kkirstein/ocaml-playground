@@ -9,18 +9,23 @@ else
 	EXT_EXE=
 fi
 
-dist_target=./dist/benchmark${EXT_EXE}
+targets="benchmark pn_worker"
+#dist_target=./dist/benchmark${EXT_EXE}
+dist_folder=./dist
 
 dune build
 
 rm -rf dist
 mkdir -p dist
-cp _build/default/bin/benchmark.exe ${dist_target}
+for t in ${targets}
+do
+	file_target=${dist_folder}/${t}${EXT_EXE}
+	cp _build/default/bin/${t}.exe ${file_target}
 
-if [ ${UNAME_O} = Cagwin ]
-then
-	ldd ${dist_target} \
-		| awk '$2  == "=>" && $3 !~ /WINDOWS/ && $3 ~/^\// && !seen[$3]++ { print "cp", $3, "./dist" }' \
-		| sh
-fi
-
+	if [ ${UNAME_O} = Cygwin ]
+	then
+		ldd ${file_target} \
+			| awk '$2  == "=>" && $3 !~ /WINDOWS/ && $3 ~/^\// && !seen[$3]++ { print "cp", $3, "./dist" }' \
+			| sh
+	fi
+done
