@@ -14,7 +14,6 @@ depends: [
 	"cmdliner"
 	"stb_image_write"
 	"lwt"
-	"lwt_ppx"
 	"zarith"
 	"zmq-lwt"
 	"listx"
