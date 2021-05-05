@@ -20,9 +20,9 @@ type 'a time_res = {
   elapsed : float
 }
 let time_it f arg =
-  let tic =  Sys.time () in
+  let tic =  Unix.gettimeofday () in
   let result = f arg in
-  let toc = Sys.time () in
+  let toc = Unix.gettimeofday () in
   {result; elapsed = toc -. tic}
 
 
