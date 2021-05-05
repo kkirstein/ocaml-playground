@@ -1,6 +1,0 @@
-(library
- (foreign_stubs
-  (language c)
-  (names perfect_number_stubs))
- (name tasks)
- (libraries zarith listx lwt zmq-lwt))

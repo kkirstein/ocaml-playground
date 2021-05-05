@@ -1,7 +1,0 @@
-(executables
- (modes byte exe)
- (names benchmark pn_worker mb_worker check_prime)
- (public_names benchmark pn_worker mb_worker check_prime)
- (libraries tasks cmdliner lwt zarith)
- (preprocess
-  (pps lwt_ppx)))
