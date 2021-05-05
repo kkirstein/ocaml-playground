@@ -1,5 +1,5 @@
 (executables
+ (modes byte exe)
  (names benchmark)
-  (public_names benchmark)
-  (libraries tasks domainslib))
-
+ (public_names benchmark)
+ (libraries tasks domainslib))

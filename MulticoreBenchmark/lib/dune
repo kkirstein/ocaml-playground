@@ -1,5 +1,3 @@
-
 (library
  (name tasks)
-  (libraries listx zarith domainslib))
-
+ (libraries listx zarith domainslib))

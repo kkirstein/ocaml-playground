@@ -1,11 +1,11 @@
-
 (executable
+ (modes byte exe)
  (name test_runner)
-  (public_name test_runner)
-  (libraries tasks alcotest zarith domainslib))
+ (public_name test_runner)
+ (libraries tasks alcotest zarith domainslib))
 
-(alias
- (name runtest)
-  (deps test_runner.exe)
-  (action (run %{deps})))
-
+(rule
+ (alias runtest)
+ (deps test_runner.exe)
+ (action
+  (run %{deps})))
