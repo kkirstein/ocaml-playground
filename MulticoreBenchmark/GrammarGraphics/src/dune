@@ -1,4 +1,0 @@
-(library
-  (name graplot)
-  (public_name graplot))
-
