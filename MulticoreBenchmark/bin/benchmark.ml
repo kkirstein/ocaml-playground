@@ -34,7 +34,7 @@ let num_worker = 3
 
 (* main entry point *)
 let bench () = 
-  let pool = Task.setup_pool ~num_domains:num_worker in
+  let pool = Task.setup_pool ~num_additional_domains:num_worker in
 
   print_endline "Fibonacci numbers";
   print_endline "=================";
@@ -94,6 +94,9 @@ let bench () =
   Printf.printf "mandelbrot(640x480) (Elapsed time %.3fs)\n" res_mandel_1.elapsed;
   let res_mandel_2 = time_it (fun _ -> Tasks.Mandelbrot.mandelbrot 1920 1200 (-0.5) 0.0 (4.0/.1200.)) () in
   Printf.printf "mandelbrot(1920x1200) (Elapsed time %.3fs)\n" res_mandel_2.elapsed;
+  let res_mandel_3 = time_it (fun _ -> Tasks.Mandelbrot.mandelbrot 1920 1200 (-0.5) 0.0 (4.0/.1200.)) () in
+  Printf.printf "mandelbrot(1920x1200) (parallel) (Elapsed time %.3fs)\n" res_mandel_3.elapsed;
+
   Tasks.Image.write_ppm res_mandel_2.result "mandelbrot_1920_1200.ppm";
   print_newline ();
   Task.teardown_pool pool
