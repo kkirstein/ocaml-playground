@@ -12,16 +12,12 @@ open Cmdliner
  * A helper function to print a list of int
  *)
 let print_int_list l = List.iter (Printf.printf "%d ") l
-
 let string_of_int_list l = String.concat " " (List.map string_of_int l)
-
 let lwt_newline () = Lwt_io.printl ""
 
 (* some config params *)
 let pn_limit = 10000
-
 let prime_limit = 100000
-
 let num_worker = 4
 
 let rec worker_ports ?(base = 5550) num =
