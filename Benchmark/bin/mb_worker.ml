@@ -39,12 +39,10 @@ let cmd =
     `P "If $(b,VERBOSE) is given, status information of the worker is
         printed to STDOUT."]
   in
-  Term.(const main $ verbose $ in_port $ out_port),
-  Term.info "mb_worker" ~version:"0.1.0" ~doc ~man
+  Cmd.v
+  (Cmd.info "mb_worker" ~version:"0.1.0" ~doc ~man)
+  Term.(const main $ verbose $ in_port $ out_port)
 
 (* main entry point *)
-let () =
-  match Term.eval cmd with
-  | `Error _  -> exit 1
-  | _         -> exit 0
+let () = exit (Cmd.eval cmd)
 

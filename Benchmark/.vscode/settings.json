@@ -2,6 +2,6 @@
 {
     "ocaml.sandbox": {
         "kind": "opam",
-        "switch": "default"
+        "switch": "4.13.0"
     }
 }
