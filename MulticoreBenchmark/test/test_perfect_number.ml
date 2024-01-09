@@ -2,6 +2,9 @@
 
 open Tasks.Perfect_number
 
+(* setup & teardown *)
+let setup () = Domainslib.Task.setup_pool ~num_domains:8
+
 (* Testable types *)
 
 (* The tests *)
@@ -31,7 +34,9 @@ let test_perfect_numbers () =
 let test_perfect_numbers_par () =
   let open Domainslib in
   let pool = Task.setup_pool ~num_domains:4 () in
-  Alcotest.(check (list int)) "perfect_numbers_par" [6; 28] (perfect_numbers_par pool 100);
+  Alcotest.(check (list int))
+    "perfect_numbers_par" [ 6; 28 ]
+    (perfect_numbers_par pool 100);
   Task.teardown_pool pool
 
 (* ---------------------- *)
@@ -51,5 +56,5 @@ let test_set =
     (* "test is_perfect_c", `Quick, test_is_perfect_c; *)
     ("test perfect_numbers", `Quick, test_perfect_numbers);
     ("test perfect_numbers_par", `Quick, test_perfect_numbers_par);
-    (* "test perfect_numbers_par2", `Quick, test_perfect_numbers_par2 *)
+    ("test perfect_numbers_par2", `Quick, test_perfect_numbers_par2);
   ]

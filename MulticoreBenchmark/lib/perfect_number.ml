@@ -29,13 +29,14 @@ let perfect_numbers_par pool n =
   let open Domainslib in
   let nd = Domainslib.Task.get_num_domains pool in
   let result = Array.make n None in
-  Task.parallel_for pool ~chunk_size:(n / nd) ~start:1 ~finish:n ~body:(fun i ->
-      if is_perfect i then result.(i) <- Some i else ());
-  result |> Array.to_list |> List.filter_map (fun x -> x)
+  Task.run pool (fun () ->
+      Task.parallel_for pool ~chunk_size:(n / nd) ~start:1 ~finish:n
+        ~body:(fun i -> if is_perfect i then result.(i) <- Some i else ());
+      result |> Array.to_list |> List.filter_map (fun x -> x))
 
 let perfect_numbers_par2 pool n =
   let open Domainslib in
-  Task.run pool (fun _ ->
+  Task.run pool (fun () ->
       Listx.range 2 n
       |> List.map (fun x ->
              Task.async pool (fun () -> if is_perfect x then Some x else None))
