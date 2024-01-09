@@ -31,7 +31,7 @@ let num_worker = 3
 
 (* main entry point *)
 let bench () =
-  let pool = Task.setup_pool ~num_additional_domains:num_worker () in
+  let pool = Task.setup_pool ~num_domains:num_worker () in
 
   print_endline "Fibonacci numbers";
   print_endline "=================";
@@ -85,12 +85,14 @@ let bench () =
   Printf.printf "perfect_numbers_par(%d) = %s (Elapsed time %.3fs)\n" pn_limit
     (string_of_int_list res_pn_2.result)
     res_pn_2.elapsed;
+  (*
   let res_pn_3 =
     time_it (Tasks.Perfect_number.perfect_numbers_par2 pool) pn_limit
   in
   Printf.printf "perfect_numbers_par2(%d) = %s (Elapsed time %.3fs)\n" pn_limit
     (string_of_int_list res_pn_3.result)
     res_pn_3.elapsed;
+    *)
   print_newline ();
 
   print_endline "Mandelbrot set";
