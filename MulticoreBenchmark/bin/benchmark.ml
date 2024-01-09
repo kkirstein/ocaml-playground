@@ -11,7 +11,6 @@ open Domainslib
  * A helper function to print a list of int
  *)
 let print_int_list l = List.iter (Printf.printf "%d ") l
-
 let string_of_int_list l = String.concat " " (List.map string_of_int l)
 
 type 'a time_res = { result : 'a; elapsed : float }
@@ -24,14 +23,16 @@ let time_it f arg =
 
 (* some config params *)
 let pn_limit = 10000
-
 let prime_limit = 100000
-
-let num_worker = 3
+let num_worker = Domain.recommended_domain_count ()
 
 (* main entry point *)
 let bench () =
   let pool = Task.setup_pool ~num_domains:num_worker () in
+
+  print_newline ();
+  print_endline ("Using " ^ string_of_int num_worker ^ " domains");
+  print_newline ();
 
   print_endline "Fibonacci numbers";
   print_endline "=================";
@@ -92,7 +93,7 @@ let bench () =
   Printf.printf "perfect_numbers_par2(%d) = %s (Elapsed time %.3fs)\n" pn_limit
     (string_of_int_list res_pn_3.result)
     res_pn_3.elapsed;
-    *)
+     *)
   print_newline ();
 
   print_endline "Mandelbrot set";
