@@ -35,11 +35,12 @@ let perfect_numbers_par pool n =
 
 let perfect_numbers_par2 pool n =
   let open Domainslib in
-  Listx.range 2 n
-  |> List.map (fun x ->
-         Task.async pool (fun () -> if is_perfect x then Some x else None))
-  |> List.map (fun x -> Task.await pool x)
-  |> List.filter_map (fun x -> x)
+  Task.run pool (fun _ ->
+      Listx.range 2 n
+      |> List.map (fun x ->
+             Task.async pool (fun () -> if is_perfect x then Some x else None))
+      |> List.map (fun x -> Task.await pool x)
+      |> List.filter_map (fun x -> x))
 
 (* generate a list of perfect numbers until given upper limit,
  * use C version of predicate *)
